@@ -1,0 +1,23 @@
+.my-logo {
+  display: flex;
+  flex-direction: row;
+  text-decoration: none;
+  /*background: white;
+  border-color: black;
+  border-width: 0.1rem;
+  border-style: solid;
+  border-radius: 0.25rem;
+  padding: 0.25rem 0.5rem;*/
+}
+
+.first-name {
+  color: black;
+  font-weight: 200;
+  font-size: 1.5rem;
+}
+
+.last-name {
+  color: black;
+  font-weight: 500;
+  font-size: 1.5rem;
+}

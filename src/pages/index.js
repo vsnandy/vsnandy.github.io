@@ -1,22 +1,30 @@
-import React from "react"
-import { Link } from "gatsby"
+import React from "react";
 
-import Layout from "../components/layout"
-import Image from "../components/image"
-import SEO from "../components/seo"
+import Layout from "../components/layout";
+import Image from "../components/image";
+import SEO from "../components/seo";
+
+import "../styles/page.css";
+
+const Home = () => (
+  <main style={{margin: "5rem 1rem"}}>
+    <header className="top-header">Welcome!</header>
+    <div className="medium-text">
+      <p>
+        Hi! I'm Varun. I'm putting together this site to showcase the projects I've been working on.
+      </p>
+      <p>
+        Take some time to check out the site.
+      </p>
+    </div>
+  </main>
+);
 
 const IndexPage = () => (
   <Layout>
     <SEO title="Home" />
-    <h1>Hi people</h1>
-    <p>Welcome to your new Gatsby site.</p>
-    <p>Now go build something great.</p>
-    <div style={{ maxWidth: `300px`, marginBottom: `1.45rem` }}>
-      <Image />
-    </div>
-    <Link to="/page-2/">Go to page 2</Link> <br />
-    <Link to="/using-typescript/">Go to "Using TypeScript"</Link>
+    <Home />
   </Layout>
-)
+);
 
-export default IndexPage
+export default IndexPage;

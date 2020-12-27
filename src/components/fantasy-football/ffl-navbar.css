@@ -1,0 +1,53 @@
+.ffl-navbar {
+  height: 2rem;
+  background-color: white;
+  margin-bottom: 1rem;
+}
+
+.ffl-navbar-navigation {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  padding: 0 0.5rem;
+}
+
+.ffl-navbar-items ul {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ffl-navbar-items li {
+  padding: 0 0.5rem;
+}
+
+.ffl-navbar-button {
+  padding: 0.25rem;
+  font-size: 1rem;
+  background-color: white;
+  border-color: black;
+  border-width: 0.05rem;
+  border-radius: 0.25rem;
+}
+
+.ffl-navbar-button:hover {
+  color: white;
+  background-color: black;
+  border-color: black;
+  border-width: 0.05rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.ffl-navbar-button-selected {
+  padding: 0.25rem;
+  font-size: 1rem;
+  background-color: white;
+  border-color: black;
+  border-width: 0.05rem;
+  border-radius: 0.25rem;
+  color: white;
+  background: black;
+}
