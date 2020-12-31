@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useMemo } from 'react';
+import { graphql, useStaticQuery } from 'gatsby';
+import Img from 'gatsby-image';
 
 import SEO from '../components/seo';
 import Layout from '../components/layout';
@@ -8,12 +10,52 @@ import { work, education } from '../db/about-db';
 //import myPic from '../images/horsetooth-reservoir-cropped.jpg';
 import '../styles/page.css';
 
+// GraphQL query to grab logos
+const Image = ({ src, ...rest }) => {
+  const data = useStaticQuery(graphql`
+    query {
+      images: allFile(
+        filter: { internal: { mediaType: { regex: "/image/" } } }
+      ) {
+        edges {
+          node {
+            relativePath
+            extension
+            publicURL
+            childImageSharp {
+              fluid {
+                ...GatsbyImageSharpFluid
+              }
+            }
+          }
+        }
+      }
+    }
+  `);
+
+  const match = useMemo(
+    () => data.images.edges.find(({ node }) => src === node.relativePath),
+    [data, src]
+  );
+
+  if(!match) return null;
+
+  const { node: { childImageSharp, publicURL, extension } = {} } = match;
+
+  if(extension === 'svg' || !childImageSharp) {
+    return <img src={publicURL} {...rest} />;
+  }
+
+  return <Img fluid={childImageSharp.fluid} {...rest} />;
+}
+
 const Work = ({ item, details_class }) => {
   const icon = require(`../images/${item.icon}`);
 
   return (
     <div className="about-card">
-      <img className="about-icon" src={icon} alt={`Couldn't find: ${item.icon}`} />
+      {/*<img className="about-icon" src={icon} alt={`Couldn't find: ${item.icon}`} />*/}
+      <Image src={item.icon} className="about-icon" alt="Logo" />
       <div className={details_class}>
         <div style={{ fontSize: "1rem", fontWeight: 500 }}>{item.title}</div>
         <div style={{ fontSize: "0.9rem" }}>{item.company}</div>
@@ -29,7 +71,7 @@ const Education = ({ item, details_class }) => {
 
   return (
     <div className="about-card">
-      <img className="about-icon" src={icon} alt={`Couldn't find: ${item.icon}`} />
+      <Image src={item.icon} className="about-icon" alt="Logo" />
       <div className={details_class}>
         <div style={{ fontSize: "1rem", fontWeight: 500 }}>{item.institution}</div>
         <div style={{ fontSize: "0.9rem" }}>{item.degree}, {item.major}</div>

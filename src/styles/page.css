@@ -64,8 +64,8 @@
 }
 
 .about-icon {
-  object-fit: contain;
-  max-width: 4.9rem;
+  width: 4.9rem;
+  height: 4.9rem;
   margin-right: 1.5rem;
 }
 
