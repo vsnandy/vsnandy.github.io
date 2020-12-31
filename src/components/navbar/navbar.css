@@ -1,8 +1,7 @@
 .navbar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 4rem;
+  position: relative;
+  margin-top: 1rem;
+  height: 2rem;
   width: 100%;
   background-color: white;
   /*border-bottom: black;
@@ -37,6 +36,8 @@
 }
 
 .navbar_navigation-items a:hover {
+  color: maroon;
+  /*
   color: black;
   background: white;
   padding: 0.25rem 0.25rem;
@@ -44,16 +45,23 @@
   border-style: solid;
   border-width: 0.05rem;
   border-radius: 0.25rem;
+  */
 }
 
 .navbar_navigation-items a:active {
+  color: black;
+  /*
   color: white;
   background: black;
   padding: 0.25rem 0.25rem;
   border-color: black;
+  */
 }
 
 .navbar__inactive-item {
+  font-size: 1.1rem;
+  color: black;
+  /*
   text-decoration: none;
   padding: 0.25rem 0.25rem;
   color: black;
@@ -61,13 +69,17 @@
   border-style: solid;
   border-width: 0.05rem;
   border-radius: 0.25rem;
+  */
 }
 
 .navbar__active-item {
+  font-size: 1.1rem;
+  /*
   color: white;
   background: black;
   padding: 0.25rem 0.25rem;
   border-color: black;
+  */
 }
 
 @media (max-width: 768px) {

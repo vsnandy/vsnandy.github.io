@@ -5,7 +5,7 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 70%;
+  width: 50%;
   max-width: 20rem;
   z-index: 200;
   transform: translateX(-100%);
@@ -25,16 +25,18 @@
 }
 
 .sidebar li {
+  width: fit-content;
   margin: 0.5rem 0;
 }
 
-.sidebar a:hover,
-.sidebar a:active {
-  color: white;
+.sidebar a:hover {
+  color: maroon;
+  /*
   background: black;
   border-style: solid;
   border-color: black;
   border-radius: 0.5rem;
+  */
 }
 
 .inactive-item {
@@ -44,11 +46,13 @@
 }
 
 .active-item {
+  /*
   color: white;
   background: black;
   border-style: solid;
   border-color: black;
   border-radius: 0.5rem;
+  */
 }
 
 @media (min-width: 769px) {

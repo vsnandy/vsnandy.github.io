@@ -8,7 +8,7 @@ import '../styles/page.css';
 const Contact = () => {
   return (
     <Layout>
-      <main style={{margin: "6rem 1rem"}}>
+      <main className="page">
         <SEO title="Contact" />
         <header className="top-header">Reach Me</header>
         <div className="medium-text">

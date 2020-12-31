@@ -8,21 +8,21 @@ a {
 
 .card-container {
   flex: 1;
-  max-width: 35%;
-  margin: 1.5rem 0rem;
+  margin: 1rem 2rem;
   border-style: solid;
-  border-width: 0.05rem 0.05rem 0.05rem;
-  border-color: black;
+  border-width: 0.15rem 0.05rem 0.05rem 0.05rem;
+  border-color: maroon black black;
   border-radius: 0;
 }
 
 .card-title {
-  width: 100%;
   color: black;
-  background-color: lightgreen;
-  border-bottom: black;
+  /*background-color: lightgray;*/
+  /*
+  border-bottom: lightgray;
   border-bottom-width: 0.05rem;
   border-bottom-style: solid;
+  */
   text-align: center;
   font-weight: 400;
   font-size: 1.5rem;
@@ -30,11 +30,17 @@ a {
 
 .card-description {
   color: black;
-  text-align: center;
+  text-align: left;
   margin: 1rem 1rem;
 }
 
 .card-icon {
-  color: darkred;
-  margin-bottom: 1rem;
+  color: maroon;
+  margin: 0 1rem 1rem 1rem;
+}
+
+@media (max-width: 768px) {
+  .card-container {
+    margin: 1rem 0;
+  }
 }

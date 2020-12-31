@@ -44,7 +44,7 @@ class TeamInfo extends React.Component {
       <Bar
         data={data}
         width={500}
-        height={500}
+        height={250}
         options={{
           maintainAspectRatio: false,
           scales: {
@@ -105,7 +105,7 @@ class LeagueInfo extends React.Component {
       <Bar
         data={data}
         width={500}
-        height={500}
+        height={250}
         options={{
           maintainAspectRatio: false
         }}

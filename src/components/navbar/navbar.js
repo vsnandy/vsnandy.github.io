@@ -21,20 +21,22 @@ const Navbar = props => (
             </Link>
           </li>
           <li>
-            <Link to="/projects" className="navbar__inactive-item" activeClassName="navbar__active-item">
+            <Link to="/projects/" className="navbar__inactive-item" activeClassName="navbar__active-item">
               Projects
             </Link>
           </li>
           <li>
-            <Link to="/about" className="navbar__inactive-item" activeClassName="navbar__active-item">
+            <Link to="/about/" className="navbar__inactive-item" activeClassName="navbar__active-item">
               About
             </Link>
           </li>
+          {/*
           <li>
-            <Link to="/contact" className="navbar__inactive-item" activeClassName="navbar__active-item">
+            <Link to="/contact/" className="navbar__inactive-item" activeClassName="navbar__active-item">
               Contact
             </Link>
           </li>
+          */}
         </ul>
       </div>
     </nav>

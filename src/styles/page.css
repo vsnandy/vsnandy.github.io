@@ -1,37 +1,118 @@
 .page {
-  margin: 5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  margin: 2rem 1rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.social-list {
+  display: flex;
+  list-style: none;
+  padding: 0;
+}
+
+.social-list-item {
+  margin: 0 0.25rem;
 }
 
 .top-header {
+  margin-bottom: 2rem;
   text-align: center;
-  font-size: 4rem;
+  font-size: 3rem;
   font-weight: 200;
 }
 
-.medium-text {
+.body-text {
   flex: 1;
-  margin: 0rem 1rem;
-  font-size: 1.75rem;
-  font-weight: 200;
+  color: #4a4a4a;
+  margin: 1rem 2rem;
+  font-size: 1rem;
+  font-weight: 400;
   white-space: normal;
-}
-
-img {
-  flex: 1;
-  margin: 2rem 1rem;
-  max-width: 100%;
-  height: 100vh;
 }
 
 .project-container {
   display: flex;
-  justify-content: center;
+}
+
+.about-section {
+  display: flex;
+  flex-direction: column-reverse;
+  align-self: stretch;
+  margin: 1rem 1rem;
+  padding-bottom: 1rem;
+  border-bottom-width: 0.05rem;
+  border-bottom-style: solid;
+  border-bottom-color: gray;
+}
+
+.about-section-header {
+  align-self: flex-start;
+  margin: 0rem 1rem;
+  font-size: 1.5rem;
+  /*
+  border-bottom-color: black;
+  border-bottom-width: 0.05rem;
+  border-bottom-style: solid;
+  */
+}
+
+.about-card {
+  display: flex;
+  margin: 0.25rem 0;
+}
+
+.about-icon {
+  object-fit: contain;
+  max-width: 4.9rem;
+  margin-right: 1.5rem;
+}
+
+.about-details {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 0.5rem 0;
+  border-bottom-width: 0.05rem;
+  border-bottom-style: solid;
+  border-bottom-color: gray;
+}
+
+.about-details-first {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 0.5rem 0;
 }
 
 .ffl-container {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
   margin-top: 1rem;
   margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+  .page {
+    align-items: flex-start;
+  }
+
+  .body-text {
+    margin: 0;
+  }
+
+  .social-list {
+    margin-left: 0rem;
+  }
+
+  .about-section-header {
+    margin: 0;
+  }
+  
+  .about-section {
+    margin: 1rem 0;
+  }
 }
