@@ -135,7 +135,11 @@
   }
 
   .about-me-text {
-    margin: 0;
+    flex: 1;
+    padding-right: 0;
+    padding-left: 0;
+    margin-left: 0;
+    margin-right: 0;
   }
   
   .about-section {
