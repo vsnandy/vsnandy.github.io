@@ -59,6 +59,7 @@
 }
 
 .navbar__inactive-item {
+  text-decoration: none;
   font-size: 1.1rem;
   color: black;
   /*
@@ -73,6 +74,7 @@
 }
 
 .navbar__active-item {
+  text-decoration: none;
   font-size: 1.1rem;
   /*
   color: white;

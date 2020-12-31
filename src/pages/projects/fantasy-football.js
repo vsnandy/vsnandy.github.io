@@ -228,13 +228,13 @@ class FFLHome extends React.Component {
   render() {
     return (
       <Layout>
-        <div className="page">
+        <main className="page">
           <SEO title="Fantasy Football" />
           <header className="top-header">Fantasy Football Analysis</header>
           <div className="ffl-container">
             {this.renderPage()}
           </div>
-        </div>
+        </main>
       </Layout>
     );
   }

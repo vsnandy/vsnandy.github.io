@@ -4,10 +4,10 @@
   align-items: center;
   margin: 0.5rem 0;
   padding: 0.5rem 1rem;
-  border-width: 0.1rem;
-  border-color: black;
+  border-width: 0.15rem 0.05rem 0.05rem 0.05rem;
+  border-color: maroon black black;
   border-style: solid;
-  border-radius: 0.5rem;
+  border-radius: 0;
 }
 
 .ffl-input {

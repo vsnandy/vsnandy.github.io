@@ -27,13 +27,13 @@ class Projects extends React.Component {
   render() {
     return (
       <Layout>
-        <div className="page">
+        <main className="page">
           <SEO title="Projects" />
           <header className="top-header">Projects</header>
           <div className="project-container">
             {this.renderCards()}
           </div>
-        </div>
+        </main>
       </Layout>
     );
   }

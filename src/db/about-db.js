@@ -1,5 +1,3 @@
-import React from 'react';
-
 import '../styles/page.css';
 
 export const work = [

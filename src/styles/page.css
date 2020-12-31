@@ -16,8 +16,25 @@
   margin: 0 0.25rem;
 }
 
+.about-profile-pic {
+  width: 7rem;
+  height: 7rem;
+}
+
+.about-me-text {
+  margin-left: 1rem;
+  margin-right: 1rem;
+  padding-left: 4rem;
+  padding-right: 4rem;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: gray;
+  border-bottom-width: 0.05rem;
+  border-bottom-style: solid;
+}
+
 .top-header {
-  margin-bottom: 2rem;
+  margin-bottom: 0.5rem;
   text-align: center;
   font-size: 3rem;
   font-weight: 200;
@@ -98,6 +115,11 @@
 @media (max-width: 768px) {
   .page {
     align-items: flex-start;
+    justify-content: flex-start;
+  }
+
+  .top-header {
+    text-align: left;
   }
 
   .body-text {
@@ -111,8 +133,17 @@
   .about-section-header {
     margin: 0;
   }
+
+  .about-me-text {
+    margin: 0;
+  }
   
   .about-section {
     margin: 1rem 0;
+  }
+
+  .ffl-container {
+    justify-content: flex-start;
+    align-items: flex-start;
   }
 }
