@@ -6,7 +6,7 @@ import './logo.css';
 // Logo with size passed in
 const Logo = props => {
   return (
-    <Link to="/" className="my-logo">
+    <Link to="/" id="my-logo">
       <div className="first-name">Varun&nbsp;</div>
       <div className="last-name">Nandyal</div>
     </Link>

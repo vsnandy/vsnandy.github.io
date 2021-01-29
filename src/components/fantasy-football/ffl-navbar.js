@@ -1,41 +1,30 @@
 import React from 'react';
+import Navbar from 'react-bootstrap/Navbar';
+import Nav from 'react-bootstrap/Nav';
 
-import './ffl-navbar.css';
+const FFLNavbar = ({ state, dispatch }) => {
+  const setPage = (key) => {
+    dispatch([{ field: 'page', value: key }]);
+  }
 
-const FFLNavbar = props => {
   return (
-    <header className="ffl-navbar">
-      <nav className="ffl-navbar-navigation">
-        <div className="ffl-navbar-items">
-          <ul>
-            <li>
-              <button 
-                className={props.classes["Home"]} 
-                onClick={() => props.changeView("Home")}
-              >
-                Home
-              </button>
-            </li>
-            <li>
-              <button 
-                className={props.classes["League Info"]} 
-                onClick={() => props.changeView("League Info")}
-              >
-                League Info
-              </button>
-            </li>
-            <li>
-              <button 
-                className={props.classes["Team Info"]}
-                onClick={() => props.changeView("Team Info")}
-              >
-                Team Info
-              </button>
-            </li>
-          </ul>
-        </div>
-      </nav>
-    </header>
+    <Navbar bg="dark" variant="dark" expand="sm" className="sticky-top">
+      <Navbar.Brand style={{ overflowX: 'hidden', maxWidth: '66%', textOverflow: 'ellipsis' }}>{state.leagueInfo.settings.name}</Navbar.Brand>
+      <Navbar.Toggle aria-controls="basic-navbar-nav" />
+      <Navbar.Collapse id="basic-navbar-nav">
+        <Nav activeKey={state.page} onSelect={(key) => setPage(key)} className="ml-auto">
+          <Nav.Item>
+            <Nav.Link eventKey="leagueSearch">League Search</Nav.Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Nav.Link eventKey="leagueOverview">League Overview</Nav.Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Nav.Link eventKey="teamInfo">Team Info</Nav.Link>
+          </Nav.Item>
+        </Nav>
+      </Navbar.Collapse>
+    </Navbar>
   );
 }
 

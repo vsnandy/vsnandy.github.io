@@ -1,12 +1,4 @@
-.project-link {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-}
-
-.card-container {
+#card-container {
   flex: 1;
   margin: 1rem 2rem;
   border-style: solid;
@@ -15,7 +7,15 @@
   border-radius: 0;
 }
 
-.card-title {
+#card-container .project-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+#card-container .card-title {
   color: black;
   /*background-color: lightgray;*/
   /*
@@ -28,19 +28,19 @@
   font-size: 1.5rem;
 }
 
-.card-description {
+#card-container .card-description {
   color: black;
   text-align: left;
   margin: 1rem 1rem;
 }
 
-.card-icon {
+#card-container .card-icon {
   color: maroon;
   margin: 0 1rem 1rem 1rem;
 }
 
 @media (max-width: 768px) {
-  .card-container {
+  #card-container {
     margin: 1rem 0;
   }
 }

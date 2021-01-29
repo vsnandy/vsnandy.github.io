@@ -113,6 +113,7 @@
 }
 
 @media (max-width: 768px) {
+  /*
   .page {
     align-items: flex-start;
     justify-content: flex-start;
@@ -121,6 +122,7 @@
   .top-header {
     text-align: left;
   }
+  */
 
   .body-text {
     margin: 0;

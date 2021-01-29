@@ -1,46 +1,61 @@
-import React from 'react';
-import { Link } from 'gatsby';
+import React, { useMemo } from 'react';
+import { Link, graphql, useStaticQuery } from 'gatsby';
+import Img from 'gatsby-image';
+import Navbar from 'react-bootstrap/Navbar';
+import Nav from 'react-bootstrap/Nav';
 
-import DrawerToggleButton from '../sidebar/drawer-toggle-button';
-import Logo from '../logo/logo';
-import './navbar.css';
+// GraphQL query to grab logos
+const Image = ({ src, alt, ...rest }) => {
+  const data = useStaticQuery(graphql`
+    query {
+      images: allFile(
+        filter: { internal: { mediaType: { regex: "/image/" } } }
+      ) {
+        edges {
+          node {
+            relativePath
+            extension
+            publicURL
+            childImageSharp {
+              fluid {
+                ...GatsbyImageSharpFluid
+              }
+            }
+          }
+        }
+      }
+    }
+  `);
 
-const Navbar = props => (
-  <header className="navbar">
-    <nav className="navbar__navigation">
-      <div className="navbar__toggle-button">
-        <DrawerToggleButton click={props.drawerClickHandler} />
-      </div>
-      <div className="navbar__logo"><Logo /></div>
-      <div className="spacer" />
-      <div className="navbar_navigation-items">
-        <ul>
-          <li>
-            <Link to="/" className="navbar__inactive-item" activeClassName="navbar__active-item">
-              Home
-            </Link>
-          </li>
-          <li>
-            <Link to="/projects/" className="navbar__inactive-item" activeClassName="navbar__active-item">
-              Projects
-            </Link>
-          </li>
-          <li>
-            <Link to="/about/" className="navbar__inactive-item" activeClassName="navbar__active-item">
-              About
-            </Link>
-          </li>
-          {/*
-          <li>
-            <Link to="/contact/" className="navbar__inactive-item" activeClassName="navbar__active-item">
-              Contact
-            </Link>
-          </li>
-          */}
-        </ul>
-      </div>
-    </nav>
-  </header>
+  const match = useMemo(
+    () => data.images.edges.find(({ node }) => src === node.relativePath),
+    [data, src]
+  );
+
+  if(!match) return null;
+
+  const { node: { childImageSharp, publicURL, extension } = {} } = match;
+
+  if(extension === 'svg' || !childImageSharp) {
+    return <img src={publicURL} {...rest} alt={alt} />;
+  }
+
+  return <Img fluid={childImageSharp.fluid} {...rest} />;
+}
+
+const MyNavbar = () => (
+  <Navbar style={{ "background": 'maroon' }} variant="dark" expand="sm" className="active">
+    <Link to="/" className="text-decoration-none"><Navbar.Brand as="span">Varun Nandyal</Navbar.Brand></Link>
+    {/*<Image src="varun-bitmoji.png" style={{ width: '35px' }} alt="Bitmoji" />*/}
+    <Navbar.Toggle aria-controls="basic-navbar-nav" />
+    <Navbar.Collapse id="basic-navbar-nav">
+      <Nav className="ml-auto">
+        <Link to="/" activeClassName="active" className="text-decoration-none"><Nav.Link as="span">Home</Nav.Link></Link>
+        <Link to="/projects/" activeClassName="active" className="text-decoration-none"><Nav.Link as="span">Projects</Nav.Link></Link>
+        <Link to="/about/" activeClassName="active" className="text-decoration-none"><Nav.Link as="span">About</Nav.Link></Link>
+      </Nav>
+    </Navbar.Collapse>
+  </Navbar>
 );
 
-export default Navbar;
+export default MyNavbar;

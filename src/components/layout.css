@@ -1,7 +1,7 @@
 .app-container {
   margin: 0 auto;
-  max-width: 50%;
-  padding: 0 1.0875rem 1.45rem;
+  max-width: 100%;
+  /*padding: 0 1.0875rem 1.45rem;*/
 }
 
 html {

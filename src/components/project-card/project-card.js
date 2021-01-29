@@ -5,7 +5,7 @@ import './project-card.css';
 
 const ProjectCard = props => {
   return (
-    <div className="card-container">
+    <div id="card-container">
       <Link className="project-link" to={props.details.link}>
         <header className="card-title">
           {props.details.title}

@@ -9,7 +9,7 @@ import React from "react"
 import PropTypes from "prop-types"
 
 //import Header from "./header"
-import PageContainer from "../components/page-container";
+import Navbar from '../components/navbar/navbar';
 
 import "./layout.css"
 
@@ -19,7 +19,7 @@ const Layout = ({ children }) => {
       <div
         className="app-container"
       >
-        <PageContainer />
+        <Navbar />
         <main>{children}</main>
         {/*}
         <footer style={{

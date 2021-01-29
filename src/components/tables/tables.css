@@ -1,0 +1,17 @@
+.table-wrapper {
+  overflow: auto;
+}
+
+.full-400.table-wrapper {
+  width: 100%;
+  height: 400px;
+}
+
+.full-500.table-wrapper {
+  width: 100%;
+  height: 500px;
+}
+
+@media (max-width: 768px) {
+
+}

@@ -32,7 +32,7 @@
   border-radius: 0.25rem;
 }
 
-.ffl-navbar-button:hover {
+.ffl-navbar-button:hover:enabled {
   color: white;
   background-color: black;
   border-color: black;
@@ -50,4 +50,14 @@
   border-radius: 0.25rem;
   color: white;
   background: black;
+}
+
+.ffl-navbar-button:disabled {
+  padding: 0.25rem;
+  font-size: 1rem;
+  color: lightgray;
+  background-color: grey;
+  border-color: black;
+  border-width: 0.05rem;
+  border-radius: 0.25rem;
 }

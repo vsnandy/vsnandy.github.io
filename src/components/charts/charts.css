@@ -1,0 +1,50 @@
+.chart-wrapper {
+  padding: 2%;
+  display: inline-block;
+}
+
+.full-400.chart-wrapper {
+  width: 96%;
+  height: 400px;
+}
+
+.half-400.chart-wrapper {
+  width: 48%;
+  height: 400px;
+}
+
+.half-300.chart-wrapper {
+  width: 48%;
+  height: 300px;
+}
+
+.third-300.chart-wrapper {
+  width: 32%;
+  height: 300px;
+}
+
+@media (max-width: 768px) {
+  .third-300.chart-wrapper {
+    width: 96%;
+  }
+
+  .half-400.chart-wrapper {
+    width: 96%;
+    height: 300px;
+  }
+
+  .half-300.chart-wrapper {
+    width: 96%;
+  }
+
+  .full-400.chart-wrapper {
+    height: 300px;
+  }
+
+  .auto-chart-wrapper {
+    height: 300px;
+    border-width: 1px;
+    border: black;
+    border-style: solid;
+  }
+}
