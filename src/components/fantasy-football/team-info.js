@@ -4,7 +4,6 @@ import Image from 'react-bootstrap/Image';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Dropdown from 'react-bootstrap/Dropdown';
-import DropdownButton from 'react-bootstrap/DropdownButton';
 import Carousel from 'react-bootstrap/Carousel';
 import Spinner from 'react-bootstrap/Spinner';
 
@@ -47,8 +46,8 @@ const getStats = (p, state) => {
   //console.log(p.playerPoolEntry.player.fullName, realGame, projectedGame);
 
   return {
-    realGame: realGame ? realGame : { appliedStats: {}, appliedTotal: 0.0 },
-    projectedGame,
+    realGame: realGame ? realGame : { appliedStats: {}, appliedTotal: 0.0, stats: {} },
+    projectedGame: projectedGame ? projectedGame : { appliedStats: {}, appliedTotal: 0.0, stats: {} },
   }
 }
 
@@ -139,12 +138,16 @@ const MatchupPeriodDropdown = ({ state: {currentMpId, currentTeam, leagueInfo },
 
   return (
     <Container className="p-0" fluid>
-      <DropdownButton size="sm" id="spId-dropdown" variant="dark" title="" onSelect={(e) => changeMpId(e)}>
-        {Array.apply(null, Array(leagueInfo.status.currentMatchupPeriod)).map((x, i) => {
-          if (currentMpId === i+1) { return <Dropdown.Item key={i+1} eventKey={i+1} active>{i+1}</Dropdown.Item>}
-          else { return <Dropdown.Item key={i+1} eventKey={i+1}>{i+1}</Dropdown.Item>}
-        })}
-      </DropdownButton>
+      <Dropdown onSelect={(e) => changeMpId(e)}>
+        <Dropdown.Toggle size="sm" id="spId-dropdown" variant="dark" />
+
+        <Dropdown.Menu style={{ maxHeight: "300px", overflowY: "auto" }}>
+          {Array.apply(null, Array(leagueInfo.status.currentMatchupPeriod)).map((x, i) => {
+            if (currentMpId === i+1) { return <Dropdown.Item key={i+1} eventKey={i+1} active>{i+1}</Dropdown.Item>}
+            else { return <Dropdown.Item key={i+1} eventKey={i+1}>{i+1}</Dropdown.Item>}
+          })}
+        </Dropdown.Menu>
+      </Dropdown>
     </Container>
   );
 }
@@ -165,12 +168,16 @@ const TeamsDropdown = ({ state: { teamInfo, leagueInfo, currentMpId, currentTeam
 
   return (
     <Container className="p-0" fluid>
-      <DropdownButton size="sm" id="spId-dropdown" variant="dark" title="" onSelect={(e) => changeTeam(e)}>
-        {teamInfo.teams.map((team) => {
-          if (team.id === currentTeam.id) { return <Dropdown.Item key={team.id} eventKey={team.id} active>{`${team.location} ${team.nickname}`}</Dropdown.Item>}
-          else { return <Dropdown.Item key={team.id} eventKey={team.id}>{`${team.location} ${team.nickname}`}</Dropdown.Item>}
-        })}
-      </DropdownButton>
+      <Dropdown onSelect={(e) => changeTeam(e)}>
+        <Dropdown.Toggle size="sm" id="dropdown-basic" variant="dark" />
+
+        <Dropdown.Menu style={{ maxHeight: "300px", overflowY: "auto" }}>
+          {teamInfo.teams.map((team) => {
+            if (team.id === currentTeam.id) { return <Dropdown.Item key={team.id} eventKey={team.id} active>{`${team.location} ${team.nickname}`}</Dropdown.Item>}
+            else { return <Dropdown.Item key={team.id} eventKey={team.id}>{`${team.location} ${team.nickname}`}</Dropdown.Item>}
+          })}
+        </Dropdown.Menu>
+      </Dropdown>
     </Container>
   );
 }

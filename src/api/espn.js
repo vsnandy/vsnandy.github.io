@@ -17,7 +17,7 @@ export const getBasicLeagueInfo = async (leagueId, seasonId) => {
 
 // Gets the league settings
 export const getLeagueSettings = async (leagueId, seasonId) => {
-  console.log("Getting league settings");
+  //console.log("Getting league settings");
   const response = await fetch(`${baseURL}/league/${leagueId}/season/${seasonId}/settings`);
   if(response.status === 200) {
     const result = await response.json();

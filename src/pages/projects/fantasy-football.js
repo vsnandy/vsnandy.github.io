@@ -49,7 +49,7 @@ const Home = () => {
   const { page } = state;
 
   useEffect(() => {
-    console.log(state);
+    //console.log(state);
 
     // eslint-disable-next-line
   }, [state]);
