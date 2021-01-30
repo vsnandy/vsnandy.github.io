@@ -188,8 +188,8 @@ const TeamCard = ({state, state: { currentTeam, currentMember, teamInfo }, setIs
     <Container className="mt-2 border border-dark bg-light d-flex justify-content-center align-items-center rounded" fluid>
       <Row>
         <Col xs="auto" className="mt-1">
-          {currentTeam.logo ? (<Image src={currentTeam.logo} width="50rem" />) : (
-            <Image src="https://g.espncdn.com/lm-static/ffl/images/default_logos/14.svg" width="50rem" />
+          {currentTeam.logo ? (<Image src={currentTeam.logo.replace('http:', 'https:')} width="50rem" />) : (
+            <Image src="https://g.espncdn.com/lm-app/lm/img/shell/shield-FFL.svg" width="50rem" />
           )}
         </Col>
         <Col xs="auto">
