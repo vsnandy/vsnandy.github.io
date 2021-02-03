@@ -1,5 +1,6 @@
-const baseURL = 'https://vsnandy.herokuapp.com/espn';
+//const baseURL = 'https://vsnandy.herokuapp.com/espn';
 //const baseURL = 'http://localhost:8000/espn';
+const baseURL = 'http://192.168.0.32:8000/espn';
 
 // Gets the basic league info
 export const getBasicLeagueInfo = async (leagueId, seasonId) => {

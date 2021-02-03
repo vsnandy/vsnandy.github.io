@@ -465,7 +465,7 @@ const Home = ({ state, dispatch }) => {
           <Spinner animation="border" />
         </Container>
       ) : (
-        <>
+        <Container fluid>
           <Container fluid>
             <TeamHeader 
               state={state}
@@ -475,7 +475,7 @@ const Home = ({ state, dispatch }) => {
           </Container>
           <Container fluid className="py-2 mt-2">
             <Row>
-              <Col xs="12" md="6" className="h-100 px-0">
+              <Col xs="12" md="6" className=" px-0 h-100">
                 <h5 className="text-center mb-3">Top Scorers for Week {state.currentMpId}</h5>
                 <PlayersCarousel state={state} />
               </Col>
@@ -490,7 +490,7 @@ const Home = ({ state, dispatch }) => {
               <RosterTable state={state} />
             </Container>
           </Container>
-        </>
+        </Container>
       )}
     </Container>
   );
