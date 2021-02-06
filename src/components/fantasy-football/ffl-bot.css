@@ -1,0 +1,38 @@
+.vbot {
+  margin-right: auto;
+  overflow-wrap: anywhere;
+  width: fit-content;
+  max-width: 75%;
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 10px;
+  padding: 2px 4px 2px 4px;
+  margin-bottom: 1px;
+  background: #800000;
+  color: white;
+}
+
+.vbot.last {
+  border-radius: 10px 10px 10px 0px;
+  margin-bottom: 5px;
+}
+
+.user {
+  margin-left: auto;
+  overflow-wrap: anywhere;
+  width: fit-content;
+  max-width: 75%;
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 10px;
+  padding: 2px 4px 2px 4px;
+  margin-bottom: 1px;
+  right: 0;
+  background: #147efb;
+  color: white;
+}
+
+.user.last {
+  border-radius: 10px 10px 0px 10px;
+  margin-bottom: 5px;
+}

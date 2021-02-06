@@ -188,8 +188,8 @@ const TeamCard = ({state, state: { currentTeam, currentMember, teamInfo }, setIs
     <Container className="mt-2 border border-dark bg-light d-flex justify-content-center align-items-center rounded" fluid>
       <Row>
         <Col xs="auto" className="mt-1">
-          {currentTeam.logo ? (<Image src={currentTeam.logo.replace('http:', 'https:')} width="50rem" />) : (
-            <Image src="https://g.espncdn.com/lm-app/lm/img/shell/shield-FFL.svg" width="50rem" />
+          {currentTeam.logo ? (<Image src={currentTeam.logo.replace('http:', 'https:')} width="50em" />) : (
+            <Image src="https://g.espncdn.com/lm-app/lm/img/shell/shield-FFL.svg" width="50em" />
           )}
         </Col>
         <Col xs="auto">
@@ -465,7 +465,7 @@ const Home = ({ state, dispatch }) => {
           <Spinner animation="border" />
         </Container>
       ) : (
-        <>
+        <Container fluid>
           <Container fluid>
             <TeamHeader 
               state={state}
@@ -475,7 +475,7 @@ const Home = ({ state, dispatch }) => {
           </Container>
           <Container fluid className="py-2 mt-2">
             <Row>
-              <Col xs="12" md="6" className="h-100 px-0">
+              <Col xs="12" md="6" className=" px-0 h-100">
                 <h5 className="text-center mb-3">Top Scorers for Week {state.currentMpId}</h5>
                 <PlayersCarousel state={state} />
               </Col>
@@ -490,7 +490,7 @@ const Home = ({ state, dispatch }) => {
               <RosterTable state={state} />
             </Container>
           </Container>
-        </>
+        </Container>
       )}
     </Container>
   );

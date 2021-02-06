@@ -95,16 +95,18 @@ const LeagueOverview = ({ state, dispatch }) => {
   return (
     <Container fluid>
       <FFLNavbar state={state} dispatch={dispatch} />
-      <Container className="half-400 chart-wrapper" fluid>
-        <WinsChart state={state} />
-      </Container>
-      <Container className="half-400 chart-wrapper" fluid>
-        <PointsChart state={state} />
-      </Container>
-      <Container className="d-flex flex-column align-items-center border-top border-bottom border-dark py-3" fluid>
-        <h5>Team Standings</h5>
-        <Container className="full-400 table-wrapper my-2" fluid>
-          <Standings state={state} />
+      <Container style={{ marginBottom: '50px' }} fluid>
+        <Container className="half-400 chart-wrapper" fluid>
+          <WinsChart state={state} />
+        </Container>
+        <Container className="half-400 chart-wrapper" fluid>
+          <PointsChart state={state} />
+        </Container>
+        <Container className="d-flex flex-column align-items-center border-top border-bottom border-dark py-3" fluid>
+          <h5>Team Standings</h5>
+          <Container className="full-400 table-wrapper my-2" fluid>
+            <Standings state={state} />
+          </Container>
         </Container>
       </Container>
     </Container>

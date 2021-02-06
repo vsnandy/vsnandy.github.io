@@ -13,10 +13,10 @@ import { projects } from '../db/projects-db';
 const Projects = () => {
   const PCard = ({ project: { title, category, description, icon, link }}) => (
     <Col xs={12} className="d-flex align-items-stretch justify-content-center">
-      <Card bg="light" text="dark" border="dark" className="align-items-center mb-4" style={{'width': '25rem'}}>
+      <Card bg="light" text="dark" border="dark" className="align-items-center mb-4" style={{'width': '25em'}}>
         <Card.Header className="d-flex container-fluid align-items-center">
           <Container className="p-0">{category}</Container>
-          <Link to={link} className="stretched-link"><FaArrowRight size="1.3rem" color="gray" /></Link>
+          <Link to={link} className="stretched-link"><FaArrowRight size="1.3em" color="gray" /></Link>
         </Card.Header>
         <Card.Body>
           <Card.Title>{title}</Card.Title>
