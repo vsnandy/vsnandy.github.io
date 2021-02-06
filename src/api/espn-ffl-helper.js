@@ -26,3 +26,11 @@ export const getPlayerSummary = (playerStats) => {
 export const getPlayerPointsForWeek = (playerStats, scoringPeriodId) => {
   return playerStats.player.stats.find(s => s.scoringPeriodId === Number(scoringPeriodId)).appliedTotal.toFixed(2);
 }
+
+// Return the top scorer out of a list of top scorers
+export const getTopScorer = (topScorers) => {
+  return {
+    playerName: topScorers[0].player.fullName,
+    totalPoints: topScorers[0].player.stats.find(s => s.statSourceId === 0 && s.statSplitTypeId === 1).appliedTotal
+  };
+}

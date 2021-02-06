@@ -10,7 +10,7 @@ import { FaRobot } from 'react-icons/fa';
 import { AiOutlineClose, AiOutlineSend } from 'react-icons/ai';
 
 import * as espn from '../../api/espn';
-import { checkQuestion, getAPICall, formulateResponse } from '../../db/ffl-bot-db';
+import { checkQuestion, getAPICall, formulateResponse, getHelp } from '../../db/ffl-bot-db';
 import './ffl-bot.css';
 
 const FFLBot = ({ state }) => {
@@ -23,7 +23,7 @@ const FFLBot = ({ state }) => {
   const [conversation, setConversation] = useState([
     {
       id: 1,
-      message: "Hi, I'm vBot! Ask me: \"How many points did [Insert Player] score in Week [Insert Week]?\"",
+      message: "Hi, I'm vBot! Type \"help\" to see what you can ask me.",
       sender: "vbot",
     },
   ]);
@@ -79,53 +79,71 @@ const FFLBot = ({ state }) => {
 
   // vbot's response function
   const sendResponse = async (message) => {
-    // check if it's a question
-    if(message[message.length - 1] !== "?") {
-      return;
+    // check "help"
+    if(message === "help") {
+      const prompts = getHelp();
+      prompts.forEach(h => {
+        setMessageCount(prevMesCount => ({...prevMesCount, vbot: prevMesCount.vbot + 1}));
+        setConversation(prevConvo => {
+          return (
+            [...prevConvo, {
+              id: messageCount.vbot + 1,
+              message: h,
+              sender: "vbot"
+            }]
+          );
+        });
+      });
     }
-
-    // check the question bank
-    const [match, params] = checkQuestion(message);
-
-    // if no question matches, give generic sorry response
-    if(!match) {
-      setMessageCount(prevMesCount => ({...prevMesCount, vbot: prevMesCount.vbot + 1}));
-      setConversation(prevConvo => {
-        return (
-          [...prevConvo, {
-            id: messageCount.vbot + 1,
-            message: "Hmm... not sure about that one. Maybe there's something else I can help you with?",
-            sender: "vbot"
-          }]
-        );
-      });
-    } else {
-      // destruct the user message based off matched question data
-      const [apiKey, finalParams] = getAPICall(match, params, state);
-      
-      let response;
-      // call the corresponding API with given params
-      try {
-        const data = await espn[apiKey](...finalParams);
-        //console.log(data.result);
-        response = formulateResponse(match, finalParams, state, data.result);
-      } catch (err) {
-        response = formulateResponse(match, finalParams, state, 0); 
+    else {
+      // check if it's a question
+      if(message[message.length - 1] !== "?") {
+        return;
       }
-      //console.log(response);
 
-      // if API call succeeds, respond with happy_path, else fail_path
-      //
-      setMessageCount(prevMesCount => ({...prevMesCount, vbot: prevMesCount.vbot + 1}));
-      setConversation(prevConvo => {
-        return (
-          [...prevConvo, {
-            id: messageCount.vbot + 1,
-            message: response,
-            sender: "vbot"
-          }]
-        );
-      });
+      // check the question bank
+      const [match, params] = checkQuestion(message);
+
+      // if no question matches, give generic sorry response
+      if(!match) {
+        setMessageCount(prevMesCount => ({...prevMesCount, vbot: prevMesCount.vbot + 1}));
+        setConversation(prevConvo => {
+          return (
+            [...prevConvo, {
+              id: messageCount.vbot + 1,
+              message: "Hmm... not sure about that one. Maybe there's something else I can help you with?",
+              sender: "vbot"
+            }]
+          );
+        });
+      } else {
+        // destruct the user message based off matched question data
+        const [apiKey, finalParams] = getAPICall(match, params, state);
+        
+        let response;
+        // call the corresponding API with given params
+        try {
+          const data = await espn[apiKey](...finalParams);
+          //console.log(data.result);
+          response = formulateResponse(match, finalParams, state, data.result);
+        } catch (err) {
+          response = formulateResponse(match, finalParams, state, 0); 
+        }
+        //console.log(response);
+
+        // if API call succeeds, respond with happy_path, else fail_path
+        //
+        setMessageCount(prevMesCount => ({...prevMesCount, vbot: prevMesCount.vbot + 1}));
+        setConversation(prevConvo => {
+          return (
+            [...prevConvo, {
+              id: messageCount.vbot + 1,
+              message: response,
+              sender: "vbot"
+            }]
+          );
+        });
+      }
     }
   }
 

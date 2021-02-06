@@ -165,14 +165,23 @@ export const getFflConstants = async() => {
 // Specific to ffl-bot //
 // ------------------- //
 
-export const getTopScorersForWeekByPosition = async (leagueId, seasonId, scoringPeriodId, position) => {
-  console.log("Grabbing topScorersForWeekByPosition: ", leagueId, seasonId, scoringPeriodId, position);
-  const response = ["Player 1", "Player 2", "Player 3"];
+export const getTopScorersForWeek = async (leagueId, seasonId, scoringPeriodId, position="all") => {
+  //console.log("Grabbing topScorersForWeekByPosition: ", leagueId, seasonId, scoringPeriodId, position);
+  const response = await fetch(`${baseURL}/league/${leagueId}/season/${seasonId}/scoringPeriod/${scoringPeriodId}/position/${encodeURIComponent(position)}/topScorers`);
 
-  return {
-    status: 200,
-    result: response
-  };
+  if(response.status === 200) {
+    const result = await response.json();
+    const topScorers = result.data.players;
+    const topScorer = helper.getTopScorer(topScorers);
+    
+    return {
+      status: response.status,
+      result: {
+        playerName: topScorer.playerName,
+        totalPoints: topScorer.totalPoints
+      }
+    };
+  }
 
   throw new Error('Network response was not ok');
 }

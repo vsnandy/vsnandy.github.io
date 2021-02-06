@@ -5,6 +5,7 @@
 export const questionBank = [
   {
     id: 0,
+    sample: "How many points did {Dalvin Cook} score in week {5}?",
     question: ["How many points did", 0, "score in week", 1, "?"],
     answers: {
       happy_path: [0, "scored", 2, "points in week", 1],
@@ -17,6 +18,7 @@ export const questionBank = [
   },
   {
     id: 1,
+    sample: "Who was the top scoring {QB} this week?",
     question: ["Who was the top scoring", 0, "this week?"],
     answers: {
       happy_path: ["The top scoring", 0, "this week was", 1, "with", 2, "points"],
@@ -24,10 +26,17 @@ export const questionBank = [
     },
     inputVars: ["position"],
     outputVars: ["position", "playerName", "totalPoints"],
-    api: "getTopScorersForWeekByPosition",
-    apiParams: ["state.leagueId", "state.seasonId", "state.currentMpId", "position"]
+    api: "getTopScorersForWeek",
+    apiParams: ["state.leagueId", "state.seasonId", "state.leagueInfo.status.currentMatchupPeriod", "position"]
   }
 ];
+
+export const getHelp = () => {
+  let prompts = ["You can ask me any of the following questions, just replace the values in \"{}\" with your own:"];
+  questionBank.forEach(q => prompts.push((q.id+1) + ": " + q.sample));
+
+  return prompts;
+}
 
 // regex function
 function escapeRegExp(stringToGoIntoTheRegex) {
@@ -77,12 +86,21 @@ export const getAPICall = (match, params, state) => {
   //console.log(`User input params: ${params}`);
 
   let finalParams = [];
-
   match.apiParams.forEach(p => {
     // check if state variable
     if(p.includes("state.")) {
-      const varKey = p.replace("state.", "");
-      finalParams.push(state[varKey]);
+      //let varKey = p.replace("state.", "");
+      const varKeys = p.split(".");
+      let stateParam;
+      // loop through iteratively
+      varKeys.forEach(k => {
+        if(k === "state") {
+          stateParam = state;
+        } else {
+          stateParam = stateParam[k];
+        }
+      });
+      finalParams.push(stateParam);
     } else {
       finalParams.push(params.shift()); // remove and return the first parameter
     }
