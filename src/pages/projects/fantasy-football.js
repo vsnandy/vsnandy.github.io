@@ -68,14 +68,14 @@ const Home = () => {
         return (
           <Container fluid>
             <LeagueOverview state={state} dispatch={dispatch} />
-            <FFLBot />
+            <FFLBot state={state} />
           </Container>
         );
       case 'teamInfo':
         return (
           <Container fluid>
             <TeamInfo state={state} dispatch={dispatch} />
-            <FFLBot />
+            <FFLBot state={state} />
           </Container>
         );
       default:

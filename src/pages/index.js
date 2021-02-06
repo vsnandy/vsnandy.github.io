@@ -41,17 +41,17 @@ const Home = () => (
     <Row xs={3} className="justify-content-center">
       <Col xs="auto">
         <a href="https://github.com/vsnandy" aria-label="GitHub">
-          <FaGithub size="2rem" color="maroon" />
+          <FaGithub size="2em" color="maroon" />
         </a>
       </Col>
       <Col xs="auto">
         <a href="mailto:varun.nandyal@gmail.com" aria-label="Email">
-          <FaEnvelope size="2rem" color="maroon" />
+          <FaEnvelope size="2em" color="maroon" />
         </a>
       </Col>
       <Col xs="auto">
         <a href="https://www.linkedin.com/in/varun-nandyal-606946125/" aria-label="LinkedIn">
-          <FaLinkedin size="2rem" color="maroon" />
+          <FaLinkedin size="2em" color="maroon" />
         </a>
       </Col>
     </Row>

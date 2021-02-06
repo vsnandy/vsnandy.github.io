@@ -1,6 +1,7 @@
-//const baseURL = 'https://vsnandy.herokuapp.com/espn';
-//const baseURL = 'http://localhost:8000/espn';
-const baseURL = 'http://192.168.0.32:8000/espn';
+import * as helper from './espn-ffl-helper';
+
+//const baseURL = 'https://vsnandy.herokuapp.com/api/v1/espn/ffl';
+const baseURL = 'http://localhost:3000/api/v1/espn/ffl';
 
 // Gets the basic league info
 export const getBasicLeagueInfo = async (leagueId, seasonId) => {
@@ -101,6 +102,34 @@ export const getTeam = async (leagueId, seasonId, scoringPeriodId, teamId) => {
   throw new Error('Network response was not ok');
 }
 
+// Get all players for a given season
+export const getAllPlayers = async (seasonId) => {
+  const response = await fetch(`${baseURL}/season/${seasonId}/players`);
+  if(response.status === 200) {
+    const result = await response.json();
+    return {
+      status: response.status,
+      result
+    };
+  }
+
+  throw new Error('Network response was not ok');
+}
+
+// Get player info for season by name
+export const getPlayerInfoByName = async (seasonId, playerName) => {
+  const response = await fetch(`${baseURL}/season/${seasonId}/player/${playerName}`);
+  if(response.status === 200) {
+    const result = await response.json();
+    return {
+      status: response.status,
+      result
+    };
+  }
+
+  throw new Error('Network response was not ok');
+}
+
 // Get the ESPN sports constant
 export const getSports = async () => {
   const response = await fetch(`${baseURL}/web-constants`);
@@ -110,7 +139,7 @@ export const getSports = async () => {
     // make the exports
     return {
       status: response.status,
-      result: result.kona['nav-data'].teams
+      result: result.data.kona['nav-data'].teams
     }
   }
 
@@ -125,8 +154,59 @@ export const getFflConstants = async() => {
 
     return {
       status: response.status,
-      result: { 'data': result["next_data"].props.pageProps.page.config.constants }
+      result: { 'data': result.data["next_data"].props.pageProps.page.config.constants }
     }
+  }
+
+  throw new Error('Network response was not ok');
+}
+
+// ------------------- //
+// Specific to ffl-bot //
+// ------------------- //
+
+export const getTopScorersForWeekByPosition = async (leagueId, seasonId, scoringPeriodId, position) => {
+  console.log("Grabbing topScorersForWeekByPosition: ", leagueId, seasonId, scoringPeriodId, position);
+  const response = ["Player 1", "Player 2", "Player 3"];
+
+  return {
+    status: 200,
+    result: response
+  };
+
+  throw new Error('Network response was not ok');
+}
+
+export const getPlayerStatsForWeek = async (leagueId, seasonId, playerName, scoringPeriodId) => {
+  //console.log("Grabbing playerStatsForWeek: ", leagueId, seasonId, scoringPeriodId, playerName);
+  // make sure playerName has capitalized first letters
+  if(!playerName.toLowerCase().includes("d/st")) {
+    playerName = playerName.toLowerCase().split(" ").map((s) => s.charAt(0).toUpperCase() + s.substring(1)).join(" ");
+  } else {
+    playerName = playerName.toLowerCase().split(" ").map((s, idx) => {
+      if(idx === 0) {
+        return s.charAt(0).toUpperCase() + s.substring(1);
+      } else {
+        return s.toUpperCase();
+      }
+    }).join(" ");
+  }
+  const response = await fetch(`${baseURL}/league/${leagueId}/season/${seasonId}/scoringPeriod/${scoringPeriodId}/player/${encodeURIComponent(playerName)}`);
+
+  if(response.status === 200) {
+    const result = await response.json();
+    const playerData = result.data.players[0];
+
+    // result has full list of stats and player data
+    // we just need to summarize and return a few things
+    const playerPoints = helper.getPlayerPointsForWeek(playerData, scoringPeriodId);
+
+    return {
+      status: response.status,
+      result: {
+        totalPoints: playerPoints
+      }
+    };
   }
 
   throw new Error('Network response was not ok');

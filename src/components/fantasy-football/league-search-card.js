@@ -8,7 +8,6 @@ import * as espn from '../../api/espn';
 
 import './league-search-card.css';
 
-//const LeagueSearchCard = ({ leagueId, seasonId, setLeagueId, setSeasonId, error, setResubmit, setPage }) => {
 const LeagueSearchCard = ({ state, dispatch }) => {
   const [details, setDetails] = useState({ leagueId: state.leagueId, seasonId: state.seasonId });
   const [validated, setValidated] = useState(false);
@@ -46,10 +45,10 @@ const LeagueSearchCard = ({ state, dispatch }) => {
       const currentMpId = leagueInfo.result.data.status.currentMatchupPeriod;
       const teamInfo = await espn.getTeams(details.leagueId, details.seasonId);
       const currentTeam = await espn.getTeam(details.leagueId, details.seasonId, currentMpId, 1);
-      //const matchupInfo = await espn.getMatchupsForWeek(details.leagueId, details.seasonId, currentMpId, currentMpId);
       const allScores = await espn.getAllScores(details.leagueId, details.seasonId);
       const constants = await espn.getFflConstants();
 
+      console.log("After API calls");
       setError(false);
       setIsLoading(false);
       setValidated(true);
@@ -63,7 +62,6 @@ const LeagueSearchCard = ({ state, dispatch }) => {
         { field: 'currentTeam', value: currentTeam.result.data.team },
         { field: 'currentMember', value: currentTeam.result.data.member },
         { field: 'currentMpId', value: currentMpId },
-        //{ field: 'matchupInfo', value: matchupInfo.result.data },
         { field: 'allScores', value: allScores.result.data },
         { field: 'page', value: 'leagueOverview' }
       ]);
