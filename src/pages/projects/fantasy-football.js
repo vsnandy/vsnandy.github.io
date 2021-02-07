@@ -7,6 +7,7 @@ import SEO from '../../components/seo';
 import LeagueSearchCard from '../../components/fantasy-football/league-search-card';
 import TeamInfo from '../../components/fantasy-football/team-info';
 import LeagueOverview from '../../components/fantasy-football/league-overview';
+import PlayerData from '../../components/fantasy-football/player-data';
 import FFLBot from '../../components/fantasy-football/ffl-bot';
 
 
@@ -75,6 +76,13 @@ const Home = () => {
         return (
           <Container fluid>
             <TeamInfo state={state} dispatch={dispatch} />
+            <FFLBot state={state} />
+          </Container>
+        );
+      case 'playerData':
+        return (
+          <Container fluid>
+            <PlayerData state={state} dispatch={dispatch} />
             <FFLBot state={state} />
           </Container>
         );

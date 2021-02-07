@@ -1,7 +1,7 @@
 import * as helper from './espn-ffl-helper';
 
-const baseURL = 'https://vsnandy.herokuapp.com/api/v1/espn/ffl';
-//const baseURL = 'http://localhost:3000/api/v1/espn/ffl';
+//const baseURL = 'https://vsnandy.herokuapp.com/api/v1/espn/ffl';
+const baseURL = 'http://localhost:3000/api/v1/espn/ffl';
 
 // Gets the basic league info
 export const getBasicLeagueInfo = async (leagueId, seasonId) => {
@@ -130,6 +130,23 @@ export const getPlayerInfoByName = async (seasonId, playerName) => {
   throw new Error('Network response was not ok');
 }
 
+// Get the top scorers advanced stats for week for a position
+export const getTopScorers = async (leagueId, seasonId, scoringPeriodId, position) => {
+  const response = await fetch(`${baseURL}/league/${leagueId}/season/${seasonId}/scoringPeriod/${scoringPeriodId}/position/${encodeURIComponent(position)}/topScorers`);
+
+  if(response.status === 200) {
+    const result = await response.json();
+    const topScorers = result.data.players;
+
+    return {
+      status: response.status,
+      result: topScorers
+    };
+  }
+
+  throw new Error('Network response was not ok');
+}
+
 // Get the ESPN sports constant
 export const getSports = async () => {
   const response = await fetch(`${baseURL}/web-constants`);
@@ -165,7 +182,7 @@ export const getFflConstants = async() => {
 // Specific to ffl-bot //
 // ------------------- //
 
-export const getTopScorersForWeek = async (leagueId, seasonId, scoringPeriodId, position="all") => {
+export const botGetTopScorersForWeek = async (leagueId, seasonId, scoringPeriodId, position="all") => {
   //console.log("Grabbing topScorersForWeekByPosition: ", leagueId, seasonId, scoringPeriodId, position);
   const response = await fetch(`${baseURL}/league/${leagueId}/season/${seasonId}/scoringPeriod/${scoringPeriodId}/position/${encodeURIComponent(position)}/topScorers`);
 
@@ -186,7 +203,7 @@ export const getTopScorersForWeek = async (leagueId, seasonId, scoringPeriodId, 
   throw new Error('Network response was not ok');
 }
 
-export const getPlayerStatsForWeek = async (leagueId, seasonId, playerName, scoringPeriodId) => {
+export const botGetPlayerStatsForWeek = async (leagueId, seasonId, playerName, scoringPeriodId) => {
   //console.log("Grabbing playerStatsForWeek: ", leagueId, seasonId, scoringPeriodId, playerName);
   // make sure playerName has capitalized first letters
   if(!playerName.toLowerCase().includes("d/st")) {

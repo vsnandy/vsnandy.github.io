@@ -22,6 +22,9 @@ const FFLNavbar = ({ state, dispatch }) => {
           <Nav.Item>
             <Nav.Link eventKey="teamInfo">Team Info</Nav.Link>
           </Nav.Item>
+          <Nav.Item>
+            <Nav.Link eventKey="playerData">Player Data</Nav.Link>
+          </Nav.Item>
         </Nav>
       </Navbar.Collapse>
     </Navbar>

@@ -4,6 +4,28 @@
  * @description:: Helper functions for espn ffl data
 */
 
+////////////////////////
+// Reusable Constants //
+////////////////////////
+
+// Player Positions
+export const positionsMaps = () => {
+  return {
+    "all": [0,2,23,4,6],
+    "QB": [0],
+    "RB": [2],
+    "WR": [4],
+    "TE": [6],
+    "FLEX": [23],
+    "D/ST": [16],
+    "K": [17]
+  };
+}
+
+//////////////////////////////
+// FFL Bot Helper Functions //
+//////////////////////////////
+
 // Return player summary
 export const getPlayerSummary = (playerStats) => {
   return {
