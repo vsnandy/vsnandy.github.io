@@ -131,8 +131,25 @@ export const getPlayerInfoByName = async (seasonId, playerName) => {
 }
 
 // Get the top scorers advanced stats for week for a position
-export const getTopScorers = async (leagueId, seasonId, scoringPeriodId, position) => {
+export const getTopScorersForWeek = async (leagueId, seasonId, scoringPeriodId, position) => {
   const response = await fetch(`${baseURL}/league/${leagueId}/season/${seasonId}/scoringPeriod/${scoringPeriodId}/position/${encodeURIComponent(position)}/topScorers`);
+
+  if(response.status === 200) {
+    const result = await response.json();
+    const topScorers = result.data.players;
+
+    return {
+      status: response.status,
+      result: topScorers
+    };
+  }
+
+  throw new Error('Network response was not ok');
+}
+
+// Get the top positional scorers for a range of weeks
+export const getTopScorersForWeeks = async (leagueId, seasonId, startWeek, endWeek, position) => {
+  const response = await fetch(`${baseURL}/league/${leagueId}/season/${seasonId}/startWeek/${startWeek}/endWeek/${endWeek}/position/${encodeURIComponent(position)}/topScorers`);
 
   if(response.status === 200) {
     const result = await response.json();

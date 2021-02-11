@@ -148,7 +148,7 @@ const FFLBot = ({ state }) => {
   }
 
   return (
-    <div style={{ position: 'fixed', bottom: 0, right: 0, zIndex: 9999 }} className="d-flex mb-2 mr-1">
+    <div style={{ position: 'fixed', bottom: 0, right: 0, zIndex: 9999 }} className="d-flex mb-2 mr-2">
       {isOpen &&
         <Container 
           style={{ height: '350px', width: '300px' }} 
