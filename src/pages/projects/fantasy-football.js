@@ -22,6 +22,7 @@ const initialState = {
   constants: {},
   currentTeam: {},
   currentMpId: null,
+  currentScoringPeriod: null,
   matchupInfo: {},
   allScores: {},
 };

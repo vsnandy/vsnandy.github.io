@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Chart from 'chart.js';
+import ChartAnnotation from 'chartjs-plugin-annotation';
 
 Chart.defaults.global.maintainAspectRatio = false;
 
@@ -61,7 +62,8 @@ export const LineChart = ({ inputs }) => {
             return null;
           },
         }
-      }
+      },
+      annotation: inputs.annotation,
     }
 
     if(!myChart) {

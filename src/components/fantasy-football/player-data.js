@@ -98,8 +98,8 @@ const WeekSelector = ({ state, scoringPeriodRange, setScoringPeriodRange, isMult
   }
 
   const { getTrackProps, ticks, segments, handles } = useRanger({
-    min: 1,
-    max: state.leagueInfo.status.currentMatchupPeriod,
+    min: state.leagueInfo.status.firstScoringPeriod,
+    max: state.currentNFLWeek,
     stepSize: 1,
     tickSize: 1,
     values,
@@ -276,7 +276,7 @@ const ScoringLeaders = ({ state, pos, topScorers, isMulti }) => {
 
 const Home = ({ state, dispatch }) => {
   // start with single select & at current Matchup Period
-  const [scoringPeriodRange, setScoringPeriodRange] = useState([state.leagueInfo.status.currentMatchupPeriod]);
+  const [scoringPeriodRange, setScoringPeriodRange] = useState([state.currentNFLWeek]);
 
   const [topScorers, setTopScorers] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -294,7 +294,6 @@ const Home = ({ state, dispatch }) => {
         : data = await getTopScorersForWeeks(state, scoringPeriodRange);
       
       if(!isCancelled) {
-        console.log(data);
         setTopScorers(data);
         setIsLoading(false);
       }

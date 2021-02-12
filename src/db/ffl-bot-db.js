@@ -27,7 +27,7 @@ export const questionBank = [
     inputVars: ["position"],
     outputVars: ["position", "playerName", "totalPoints"],
     api: "botGetTopScorersForWeek",
-    apiParams: ["state.leagueId", "state.seasonId", "state.leagueInfo.status.currentMatchupPeriod", "position"]
+    apiParams: ["state.leagueId", "state.seasonId", "state.currentNFLWeek", "position"]
   }
 ];
 

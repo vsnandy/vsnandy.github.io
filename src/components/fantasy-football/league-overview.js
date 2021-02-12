@@ -8,14 +8,15 @@ import '../charts/charts.css';
 import '../tables/tables.css';
 
 const WinsChart = ({state: { leagueInfo, teamInfo }}) => {
-  const numGames = (
-    leagueInfo.status.currentMatchupPeriod > leagueInfo.settings.scheduleSettings.matchupPeriodCount ?
-      leagueInfo.settings.scheduleSettings.matchupPeriodCount :
-      leagueInfo.status.currentMatchupPeriod
+  // 
+  const numMatchups = (
+    leagueInfo.status.currentMatchupPeriod > leagueInfo.settings.scheduleSettings.matchupPeriodCount * leagueInfo.settings.scheduleSettings.matchupPeriodLength
+      ? leagueInfo.settings.scheduleSettings.matchupPeriodCount
+      : leagueInfo.status.currentMatchupPeriod
   );
 
   const inputs = {
-    title: `Wins by Team (${numGames} games played)`,
+    title: `Wins by Team (${numMatchups} matchups played)`,
     labels: teamInfo.teams.map(team => {
       const owner = teamInfo.members.find(m => m.id === team.primaryOwner);
       return (
@@ -35,7 +36,7 @@ const WinsChart = ({state: { leagueInfo, teamInfo }}) => {
     tooltipTitles: teamInfo.teams.map(team => `${team.location} ${team.nickname}`),
     xTitle: "Teams",
     yTitle: "# of Wins",
-    maxY: numGames % 2 === 1 ? numGames + 1 : numGames,
+    maxY: numMatchups % 2 === 1 ? numMatchups + 1 : numMatchups,
   };
 
   return <BarChart inputs={inputs} />;

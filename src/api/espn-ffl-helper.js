@@ -53,6 +53,6 @@ export const getPlayerPointsForWeek = (playerStats, scoringPeriodId) => {
 export const getTopScorer = (topScorers) => {
   return {
     playerName: topScorers[0].player.fullName,
-    totalPoints: topScorers[0].player.stats.find(s => s.statSourceId === 0 && s.statSplitTypeId === 1).appliedTotal
+    totalPoints: topScorers[0].player.stats.find(s => s.statSourceId === 0 && s.statSplitTypeId === 1).appliedTotal.toFixed(2)
   };
 }

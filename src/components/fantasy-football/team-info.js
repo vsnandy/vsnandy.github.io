@@ -27,7 +27,7 @@ const teamImgUrl = "https://a.espncdn.com/i/teamlogos/nfl/500/";
 const getStats = (p, state) => {
   let realGame = p.playerPoolEntry.player.stats.find(s => {
     return (
-      s.scoringPeriodId === state.currentMpId &&
+      s.scoringPeriodId === state.currentScoringPeriod &&
       s.seasonId === Number(state.seasonId) &&
       s.statSourceId === 0 && // Real
       s.statSplitTypeId === 1 // Game
@@ -36,7 +36,7 @@ const getStats = (p, state) => {
 
   let projectedGame = p.playerPoolEntry.player.stats.find(s => {
     return (
-      s.scoringPeriodId === state.currentMpId &&
+      s.scoringPeriodId === state.currentScoringPeriod &&
       s.seasonId === Number(state.seasonId) &&
       s.statSourceId === 1 && // Projected
       s.statSplitTypeId === 1 // Game
@@ -121,16 +121,26 @@ const getRecordAndPoints = (state) => {
 ////////////////
 
 // Weekly matchup dropdown
-const MatchupPeriodDropdown = ({ state: {currentMpId, currentTeam, leagueInfo }, setIsLoading, dispatch }) => {
-  const changeMpId = async (id) => {
-    //console.log(currentMpId, id);
-    if(currentMpId !== Number(id)) {
+const ScoringPeriodDropdown = ({ state, state: {currentScoringPeriod, currentTeam, leagueInfo }, setIsLoading, dispatch }) => {
+  const changeScoringPeriod = async (id) => {
+    if(currentScoringPeriod !== Number(id)) {
       setIsLoading(true);
       const response = await espn.getTeam(leagueInfo.id, leagueInfo.seasonId, id, currentTeam.id);
+
+      // grab the corresponding matchupPeriodId
+      let mpId;
+      for(let key in leagueInfo.settings.scheduleSettings.matchupPeriods) {
+        if(leagueInfo.settings.scheduleSettings.matchupPeriods[key].includes(Number(id))) {
+          mpId = key;
+          break;
+        }
+      }
+
       dispatch([
         { field: 'currentTeam', value: response.result.data.team },
         { field: 'currentMember', value: response.result.data.member },
-        { field: 'currentMpId', value: Number(id) },
+        { field: 'currentScoringPeriod', value: Number(id) },
+        { field: 'currentMpId', value: mpId },
       ]);
       setIsLoading(false);
     }
@@ -138,12 +148,12 @@ const MatchupPeriodDropdown = ({ state: {currentMpId, currentTeam, leagueInfo },
 
   return (
     <Container className="p-0" fluid>
-      <Dropdown onSelect={(e) => changeMpId(e)}>
+      <Dropdown onSelect={(e) => changeScoringPeriod(e)}>
         <Dropdown.Toggle size="sm" id="spId-dropdown" variant="dark" />
 
         <Dropdown.Menu style={{ maxHeight: "300px", overflowY: "auto" }}>
-          {Array.apply(null, Array(leagueInfo.status.currentMatchupPeriod)).map((x, i) => {
-            if (currentMpId === i+1) { return <Dropdown.Item key={i+1} eventKey={i+1} active>{i+1}</Dropdown.Item>}
+          {Array.apply(null, Array(state.currentNFLWeek)).map((x, i) => {
+            if (currentScoringPeriod === i+1) { return <Dropdown.Item key={i+1} eventKey={i+1} active>{i+1}</Dropdown.Item>}
             else { return <Dropdown.Item key={i+1} eventKey={i+1}>{i+1}</Dropdown.Item>}
           })}
         </Dropdown.Menu>
@@ -153,11 +163,11 @@ const MatchupPeriodDropdown = ({ state: {currentMpId, currentTeam, leagueInfo },
 }
 
 // team selection dropdown
-const TeamsDropdown = ({ state: { teamInfo, leagueInfo, currentMpId, currentTeam }, setIsLoading, dispatch }) => {
+const TeamsDropdown = ({ state: { teamInfo, leagueInfo, currentScoringPeriod, currentTeam }, setIsLoading, dispatch }) => {
   const changeTeam = async (id) => {
     if(currentTeam.id !== Number(id)) {
       setIsLoading(true);
-      const response = await espn.getTeam(leagueInfo.id, leagueInfo.seasonId, currentMpId, id);
+      const response = await espn.getTeam(leagueInfo.id, leagueInfo.seasonId, currentScoringPeriod, id);
       dispatch([
         { field: 'currentTeam', value: response.result.data.team },
         { field: 'currentMember', value: response.result.data.member }
@@ -243,13 +253,13 @@ const TeamHeader = ({ state, state: { currentTeam }, dispatch, setIsLoading }) =
               <h3 className="text-center">Week</h3>
             </Col>
             <Col xs="auto" className="ml-2 px-0">
-              <MatchupPeriodDropdown 
+              <ScoringPeriodDropdown 
                 setIsLoading={setIsLoading} 
                 state={state}
                 dispatch={dispatch} />
             </Col>
           </Row>
-          <h5 className="text-center">{state.currentMpId}</h5>
+          <h5 className="text-center">{state.currentScoringPeriod}</h5>
         </Container>
       </Col>
       <Col xs="6" md="2" className="pl-0 pr-1 pl-md-2 pr-md-0">
@@ -330,10 +340,11 @@ const PlayersCarousel = ({state, state: { currentTeam, constants } }) => {
 
 const ScoresChart = ({ state }) => {
   // filter down to matchups containing the team and up until the given week
-  const weeks = state.allScores.filter(w => w.matchupPeriodId <= state.currentMpId);
+  // getting rid of this due to confusion
+  //const weeks = state.allScores.filter(w => w.matchupPeriodId <= state.currentMpId);
 
   let matchups = [];
-  weeks.forEach(m => {
+  state.allScores.forEach(m => {
     if('away' in m && 'home' in m) {
       if(m.away.teamId === state.currentTeam.id) {
         matchups.push({ ...m.away, matchupPeriodId: m.matchupPeriodId, opp: m.home.teamId, oppPoints: m.home.totalPoints });
@@ -351,11 +362,11 @@ const ScoresChart = ({ state }) => {
     }
   });
 
-  const weekIds = Array.apply(null, Array(state.currentMpId)).map((x, i) => i + 1);
+  const matchupIds = Array.apply(null, Array(matchups.length)).map((x, i) => i + 1);
 
   const inputs = {
-    title: "Points For and Against by Week",
-    labels: weekIds,
+    title: "Points For and Against by Matchup",
+    labels: matchupIds,
     datasets: [
       {
         label: "Points For",
@@ -376,19 +387,56 @@ const ScoresChart = ({ state }) => {
         lineTension: 0.4,
       }
     ],
-    xTitle: "Week",
+    xTitle: "Matchup",
     yTitle: "Points",
     ttMode: 'x',
     ttIntersect: false,
     ttPosition: 'average',
     ttTitle: matchups.map(m => {
       const oppTeam = state.teamInfo.teams.find(t => t.id === m.opp);
+      
+      const scheduleSettings = state.leagueInfo.settings.scheduleSettings;
+      let title = "";
+      // check if playoffs
+      if(m.matchupPeriodId > scheduleSettings.matchupPeriodCount) {
+        const playoffRound = m.matchupPeriodId - scheduleSettings.matchupPeriodCount;
+        title += `Playoff Round ${playoffRound} `;
+      }
+      // check for multi-week matchup
+      const mp = scheduleSettings.matchupPeriods[m.matchupPeriodId];
+      if(mp.length > 1) {
+        title += `(NFL Week ${mp[0]} - NFL Week ${mp[mp.length-1]})`
+      } else {
+        // if title empty, then not a playoff week
+        title === "" 
+        ? title += `NFL Week ${mp[0]}`
+        : title += `(NFL Week ${mp[0]})`;
+      }
       return (
         oppTeam
-        ? `Week ${m.matchupPeriodId} vs. ${oppTeam.location} ${oppTeam.nickname}`
-        : `Week ${m.matchupPeriodId} vs. Bye`
+        ? `${title} vs. ${oppTeam.location} ${oppTeam.nickname}`
+        : `${title} vs. Bye`
       );
     }),
+    annotation: {
+      annotations: [
+        {
+          type: "line",
+          display: true,
+          drawTime: "beforeDatasetsDraw",
+          mode: "vertical",
+          scaleID: "x-axis-0",
+          value: state.leagueInfo.settings.scheduleSettings.matchupPeriodCount+1,
+          borderColor: "black",
+          borderWidth: 1,
+          label: {
+            yAdjust: 85,
+            enabled: true,
+            content: 'Playoffs',
+          }
+        }
+      ]
+    },
     /*
     ttAfterTitle: matchups.map(m => {
       const oppTeam = state.teamInfo.teams.find(t => t.id === m.opp);
@@ -446,8 +494,6 @@ const RosterTable = ({ state }) => {
   return <SmallSimpleTable headers={headers} rows={rows} />;
 }
 
-
-
 //////////
 // HOME //
 //////////
@@ -476,7 +522,7 @@ const Home = ({ state, dispatch }) => {
           <Container fluid className="py-2 mt-2">
             <Row>
               <Col xs="12" md="6" className=" px-0 h-100">
-                <h5 className="text-center mb-3">Top Scorers for Week {state.currentMpId}</h5>
+                <h5 className="text-center mb-3">Top Scorers for NFL Week {state.currentScoringPeriod}</h5>
                 <PlayersCarousel state={state} />
               </Col>
               <Col xs="12" md="6" className="py-0 pl-md-2 mt-4 mt-md-0 auto-chart-wrapper">
@@ -485,7 +531,7 @@ const Home = ({ state, dispatch }) => {
             </Row>
           </Container>
           <Container fluid className="px-0 py-2 mt-2">
-            <h5 className="text-center mb-3">Roster for Week {state.currentMpId}</h5>
+            <h5 className="text-center mb-3">Roster for NFL Week {state.currentScoringPeriod}</h5>
             <Container fluid className="full-500 table-wrapper px-0">
               <RosterTable state={state} />
             </Container>
