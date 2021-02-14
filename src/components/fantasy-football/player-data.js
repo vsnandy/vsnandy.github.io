@@ -9,8 +9,6 @@ import Accordion from 'react-bootstrap/Accordion';
 import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import Overlay from 'react-bootstrap/Overlay';
-import Tooltip from 'react-bootstrap/Tooltip';
 import { useRanger } from 'react-ranger';
 
 import * as espn from '../../api/espn';
@@ -58,21 +56,20 @@ const getTopScorersForWeeks = async (state, scoringPeriodRange) => {
   return topScorers;
 }
 
-// Get the stats and points, keeping track of multi-week or not
-const getPlayerPoints = (p, state, isMulti) => {
-  if(isMulti) {
-    return p.combinedStats.realStats.appliedTotal.toFixed(2);
-  } else {
-    return (
-      p.player.stats.find(s => {
-        return (
-          s.statSourceId === 0 && 
-          s.statSplitTypeId === 1 && 
-          s.seasonId === state.leagueInfo.seasonId
-        );
-      }).appliedTotal.toFixed(2)
-    );
-  }
+// If stat exists, return it else return 0
+const Stat = ({ name, vals, nval = 0, align = "left", xs="6", md="3", p="px-0", vtext="text-muted" }) => {
+  let val = '';
+  vals.forEach(v => v ? val += v : val += nval.toString());
+  return (
+    <Col xs={xs} md={md} className={p}>
+      <p className={`text-${align} m-0`} style={{ fontSize: '14px' }}>
+        {name}
+      </p>
+      <p className={`text-${align} ${vtext} m-0`} style={{ fontSize: '14px' }}>
+        {val}
+      </p>
+    </Col>
+  );
 }
 
 ////////////////
@@ -181,32 +178,136 @@ const WeekSelector = ({ state, scoringPeriodRange, setScoringPeriodRange, isMult
                 background: "linear-gradient(to bottom, #eee 45%, #ddd 55%)",
                 border: "solid 1px maroon"
               }
-          })}
-        />
-          ))}
+            })}
+          />
+        ))}
       </div>
     </Container>
   );
 }
 
 // Component to list Top 5 Scoring Leaders for position
-const ScoringLeaders = ({ state, pos, topScorers, isMulti }) => {
+const ScoringLeaders = ({ state, pos, topScorers }) => {
   const PlayerDetails = ({ p }) => {
+    const stats = p.combinedStats.realStats.stats;
+    const realPoints = p.combinedStats.realStats.appliedTotal;
+    const projPoints = p.combinedStats.projStats.appliedTotal;
+
     return (
       <Container fluid>
-        <Row>
-          <Col xs="6" sm="4" md="3">
-            <h6 className="text-center m-0">PROJ</h6>
-            {isMulti
-              ? <p className="text-center m-0" style={{ fontSize: '14px' }}>{p.combinedStats.projStats.appliedTotal.toFixed(2)}</p>
-              : <p className="text-center m-0" style={{ fontSize: '14px' }}>{p.player.stats.find(s => {
-                return (
-                  s.statSourceId === 1 && 
-                  s.statSplitTypeId === 1 && 
-                  s.seasonId === state.leagueInfo.seasonId
-                );
-              }).appliedTotal.toFixed(2)}</p>
+        <Row className="justify-content-between">
+          <Col xs="7" md="8" className="px-0">
+            {pos === "QB" &&
+              <div className="mb-2">
+                <h6 className="m-0 mb-1">
+                  PASSING
+                </h6>
+                <Row className="justify-content-start px-0 mx-0">
+                  <Stat name="C / A" vals={[stats[1],"/",stats[0]]} nval={"0/0"} md="auto" p="px-0 pr-3" />
+                  <Stat name="YDS" vals={[stats[3]]} md="3" />
+                  <Stat name="TD" vals={[stats[4]]} md="2" />
+                  <Stat name="INT" vals={[stats[20]]} md="2" />
+                </Row>
+              </div>
             }
+            {["QB","RB","WR","TE"].includes(pos) && 
+              <div className="mb-2">
+                <h6 className="m-0 mb-1">
+                  RUSHING
+                </h6>
+                <Row className="justify-content-start px-0 mx-0">
+                  <Stat name="CAR" vals={[stats[23]]} />
+                  <Stat name="YDS" vals={[stats[24]]} />
+                  <Stat name="TD" vals={[stats[25]]} />
+                </Row>
+              </div>
+            }
+            {["RB","WR","TE"].includes(pos) &&
+              <div className="mb-2">
+                <h6 className="m-0 mb-1">
+                  RECEIVING
+                </h6>
+                <Row className="justify-content-start px-0 mx-0">
+                  <Stat name="REC" vals={[stats[53]]} />
+                  <Stat name="YDS" vals={[stats[42]]} />
+                  <Stat name="TD" vals={[stats[43]]} />
+                  <Stat name="TAR" vals={[stats[58]]} />
+                </Row>
+              </div>
+            }
+            {["QB","RB","WR","TE"].includes(pos) && 
+              <div className="mb-2">
+                <h6 className="m-0 mb-1">
+                  MISC
+                </h6>
+                <Row className="justify-content-start px-0 mx-0">
+                  <Stat name="2PC" vals={[stats[62]]} />
+                  <Stat name="FUML" vals={[stats[72]]} />
+                  <Stat name="TD" vals={[stats[10000]]} />
+                </Row>
+              </div>
+            }
+            {["D/ST"].includes(pos) && 
+              <div className="mb-2">
+                <h6 className="m-0 mb-1">
+                  DEFENSE / SPECIAL TEAMS
+                </h6>
+                <Row className="justify-content-start px-0 mx-0 mb-1">
+                  <Stat name="TD" vals={[stats[105]]} />
+                  <Stat name="INT" vals={[stats[95]]} />
+                  <Stat name="FR" vals={[stats[96]]} />
+                  <Stat name="SCK" vals={[stats[99]]} />
+                </Row>
+                <Row className="justify-content-start px-0 mx-0">
+                  <Stat name="SFTY" vals={[stats[98]]} />
+                  <Stat name="BLK" vals={[stats[97]]} />
+                  <Stat name="PA" vals={[stats[120]]} />
+                  <Stat name="YA" vals={[stats[127]]} />
+                </Row>
+              </div>
+            }
+            {["K"].includes(pos) &&
+              <div className="mb-2">
+                <h6 className="m-0 mb-1">
+                  KICKING
+                </h6>
+                <Row className="justify-content-start px-0 mx-0 mb-1">
+                  <Stat name="FG39 / FGA39" vals={[stats[80], "/", stats[81]]} md="6"/>
+                  <Stat name="FG49 / FGA49" vals={[stats[77], "/", stats[78]]} md="6" />
+                </Row>
+                <Row className="justify-content-start px-0 mx-0 mb-1">
+                  <Stat name="FG50+ / FGA50+" vals={[stats[74], "/", stats[75]]} md="6" />
+                  <Stat name="FG / FM" vals={[stats[83], "/", stats[84]]} md="6" />
+                </Row>
+                <Row className="justify-content-start px-0 mx-0">
+                  <Stat name="XP / XPA" vals={[stats[86], "/", stats[87]]} md="6" />
+                </Row>
+              </div>
+            }
+          </Col>
+          <Col xs="5" md="4" className="px-0">
+            <h6 className="text-right m-0 mb-1">
+              FANTASY
+            </h6>
+            <Row className="justify-content-end px-0 mx-0">
+              <Stat 
+                name="PROJ" 
+                vals={[
+                  projPoints.toFixed(2)
+                ]}
+                align="right" md="6" 
+              />
+              <Stat 
+                name="+/-" 
+                vals={[
+                  (realPoints-projPoints >= 0)
+                  ? "+" + (realPoints-projPoints).toFixed(2)
+                  : (realPoints-projPoints).toFixed(2)
+                ]} 
+                align="right" md="6" 
+                vtext={realPoints-projPoints > 0 ? "text-success" : "text-danger"}
+              />
+            </Row>
           </Col>
         </Row>
       </Container>
@@ -215,10 +316,12 @@ const ScoringLeaders = ({ state, pos, topScorers, isMulti }) => {
 
   return (
     <Card border="dark">
-      <Card.Header className="px-2 border-bottom border-dark bg-light">
-        <Card.Title className="m-0">
-          {pos}
-        </Card.Title>
+      <Card.Header className="px-2 py-1 border-bottom border-dark bg-light">
+        <Row className="mx-0 justify-content-between">
+          <Card.Text className="my-0 align-self-end text-left" style={{ fontSize: '14px' }}>Player</Card.Text>
+          <Card.Title className="m-0" style={{ fontSize: '24px' }}>{pos}</Card.Title>
+          <Card.Text className="my-0 align-self-end text-right" style={{ fontSize: '14px' }}>Points</Card.Text>
+        </Row>
       </Card.Header>
       <ListGroup variant="flush">
         <Accordion>
@@ -229,13 +332,18 @@ const ScoringLeaders = ({ state, pos, topScorers, isMulti }) => {
               `${playerImgUrl}${p.id}.png`
             );
             const borderClass = idx === 0 ? 'border-top-0' : idx === 4 ? 'rounded-bottom' : '';
+            
+            // grab who has the player, check if free agent
+            const onTeamId = state.teamInfo.teams.find(t => t.id === p.onTeamId);
+            const onTeamAbbrev = onTeamId ? onTeamId.abbrev : "FA";
+
             return (
               <div key={idx}>
                 <Accordion.Toggle 
                   as={ListGroup.Item} 
                   action 
                   variant="light"
-                  className={["py-1 border-left-0 border-right-0 border-bottom-0", borderClass]} 
+                  className={["py-1 mx-0 border-left-0 border-right-0 border-bottom-0", borderClass]} 
                   eventKey={idx+1}
                 >
                   <Row>
@@ -244,15 +352,18 @@ const ScoringLeaders = ({ state, pos, topScorers, isMulti }) => {
                       height="35px"
                       rounded
                     />
-                    <Col className="ml-1">
-                      <p style={{ fontSize: '14px' }} className="mb-0 text-dark">{p.player.fullName}</p>
+                    <Col className="ml-1 pl-1">
+                      <p style={{ fontSize: '14px' }} className="mb-0 text-dark">
+                        {p.player.fullName}
+                      </p>
                       <p style={{ fontSize: '12px' }} className="mb-0">
                         {state.constants.proTeamsMap[p.player.proTeamId].abbrev} {" "}
-                        {state.constants.positions[p.player.defaultPositionId].abbrev}
+                        {state.constants.positions[p.player.defaultPositionId].abbrev} {" "}
+                        ({onTeamAbbrev})
                       </p>
                     </Col>
                     <h6 className="font-weight-normal my-auto text-dark">
-                      {getPlayerPoints(p, state, isMulti)} pts
+                      {p.combinedStats.realStats.appliedTotal.toFixed(2)}
                     </h6>
                   </Row>
                 </Accordion.Toggle>
@@ -294,6 +405,7 @@ const Home = ({ state, dispatch }) => {
         : data = await getTopScorersForWeeks(state, scoringPeriodRange);
       
       if(!isCancelled) {
+        console.log(data);
         setTopScorers(data);
         setIsLoading(false);
       }
@@ -329,7 +441,7 @@ const Home = ({ state, dispatch }) => {
           <Row className="my-2">
             {positions.map((p, idx) => (
               <Col key={idx} xs="12" sm="6" lg="4" className="mt-3">
-                <ScoringLeaders state={state} pos={p} topScorers={topScorers} isMulti={isMulti} />
+                <ScoringLeaders state={state} pos={p} topScorers={topScorers} />
               </Col>
             ))}
           </Row>
