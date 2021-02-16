@@ -25,6 +25,7 @@ const initialState = {
   currentScoringPeriod: null,
   matchupInfo: {},
   allScores: {},
+  proTeamSchedules: {},
 };
 
 /*

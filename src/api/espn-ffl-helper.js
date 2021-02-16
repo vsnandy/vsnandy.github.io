@@ -22,6 +22,20 @@ export const positionsMaps = () => {
   };
 }
 
+//////////////////////
+// Helper Functions //
+//////////////////////
+
+// Converts Epoch time to CST
+export const convertEpochToCST = (time) => {
+  //console.log(time);
+  var d = new Date(time);
+  //console.log(d);
+  var utc = d.getTime() + (d.getTimezoneOffset() * 60000);  //This converts to UTC 00:00
+  var nd = new Date(utc + (3600000*-6));
+  return nd.toLocaleString();
+}
+
 //////////////////////////////
 // FFL Bot Helper Functions //
 //////////////////////////////

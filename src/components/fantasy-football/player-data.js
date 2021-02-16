@@ -13,6 +13,7 @@ import { useRanger } from 'react-ranger';
 
 import * as espn from '../../api/espn';
 import FFLNavbar from './ffl-navbar';
+import * as helper from '../../api/espn-ffl-helper';
 
 ///////////////
 // CONSTANTS //
@@ -187,16 +188,40 @@ const WeekSelector = ({ state, scoringPeriodRange, setScoringPeriodRange, isMult
 }
 
 // Component to list Top 5 Scoring Leaders for position
-const ScoringLeaders = ({ state, pos, topScorers }) => {
+const ScoringLeaders = ({ state, pos, topScorers, isMulti, scoringPeriodRange }) => {
   const PlayerDetails = ({ p }) => {
     const stats = p.combinedStats.realStats.stats;
     const realPoints = p.combinedStats.realStats.appliedTotal;
     const projPoints = p.combinedStats.projStats.appliedTotal;
+    const oppStats = p.combinedStats.oppStats;
+    let gameDate = null;
+    if(!isMulti) {
+      const schedule = state.proTeamSchedules.settings.proTeams.find(t => t.id === p.opponents[0].playerTeamId).proGamesByScoringPeriod;
+      const game = schedule[p.opponents[0].scoringPeriodId][0];
+      gameDate = helper.convertEpochToCST(game.date);
+      //console.log(gameDate);
+    }
 
     return (
       <Container fluid>
         <Row className="justify-content-between">
           <Col xs="7" md="8" className="px-0">
+            {!isMulti &&
+              <div className="mb-2">
+                <h6 className="m-0 mb-1">
+                  NFL WEEK {scoringPeriodRange[0]}
+                </h6>
+                <Row className="justify-content-start px-0 mx-0">
+                  <Stat 
+                    name="OPP" 
+                    vals={[p.opponents[0].loc === "away"
+                          ? "@" + state.constants.proTeamsMap[p.opponents[0].oppTeamId].abbrev
+                          : state.constants.proTeamsMap[p.opponents[0].oppTeamId].abbrev
+                        ]}
+                  />
+                </Row>
+              </div>
+            }
             {pos === "QB" &&
               <div className="mb-2">
                 <h6 className="m-0 mb-1">
@@ -289,7 +314,7 @@ const ScoringLeaders = ({ state, pos, topScorers }) => {
             <h6 className="text-right m-0 mb-1">
               FANTASY
             </h6>
-            <Row className="justify-content-end px-0 mx-0">
+            <Row className="justify-content-end px-0 mx-0 mb-1">
               <Stat 
                 name="PROJ" 
                 vals={[
@@ -307,6 +332,19 @@ const ScoringLeaders = ({ state, pos, topScorers }) => {
                 align="right" md="6" 
                 vtext={realPoints-projPoints > 0 ? "text-success" : "text-danger"}
               />
+            </Row>
+            <Row className="justify-content-end mx-0 px-0">
+              <Stat 
+                name={isMulti ? "AVG OPR" : "OPR"}
+                vals={[oppStats.appliedRank.toFixed(2)]}
+                align="right" md="6"
+              />
+              {/* Commenting out since stat is misleading
+              <Stat
+                name={isMulti ? "AVG OPA" : "OPA"}
+                vals={[oppStats.appliedAverage.toFixed(2)]}
+                align="right" md="6"
+              />*/}
             </Row>
           </Col>
         </Row>
@@ -439,9 +477,9 @@ const Home = ({ state, dispatch }) => {
             setIsMulti={setIsMulti}
           />
           <Row className="my-2">
-            {positions.map((p, idx) => (
+            {positions.map((pos, idx) => (
               <Col key={idx} xs="12" sm="6" lg="4" className="mt-3">
-                <ScoringLeaders state={state} pos={p} topScorers={topScorers} />
+                <ScoringLeaders {...{state, pos, topScorers, isMulti, scoringPeriodRange}} />
               </Col>
             ))}
           </Row>

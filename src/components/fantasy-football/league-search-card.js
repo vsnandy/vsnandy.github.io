@@ -50,6 +50,7 @@ const LeagueSearchCard = ({ state, dispatch }) => {
       const currentTeam = await espn.getTeam(details.leagueId, details.seasonId, currentScoringPeriod, 1);
       const allScores = await espn.getAllScores(details.leagueId, details.seasonId);
       const constants = await espn.getFflConstants();
+      const proTeamSchedules = await espn.getProTeamSchedules(details.seasonId);
 
       setError(false);
       setIsLoading(false);
@@ -67,7 +68,8 @@ const LeagueSearchCard = ({ state, dispatch }) => {
         { field: 'currentScoringPeriod', value: currentScoringPeriod },
         { field: 'currentNFLWeek', value: currentScoringPeriod },
         { field: 'allScores', value: allScores.result.data },
-        { field: 'page', value: 'leagueOverview' }
+        { field: 'page', value: 'leagueOverview' },
+        { field: 'proTeamSchedules', value: proTeamSchedules.result.data }
       ]);
       return;
     } catch (err) {

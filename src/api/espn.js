@@ -164,6 +164,22 @@ export const getTopScorersForWeeks = async (leagueId, seasonId, startWeek, endWe
   throw new Error('Network response was not ok');
 }
 
+// Get the pro team schedules
+export const getProTeamSchedules = async (seasonId) => {
+  const response = await fetch(`${baseURL}/season/${seasonId}/proTeamSchedules`);
+
+  if(response.status === 200) {
+    const result = await response.json();
+    
+    return {
+      status: response.status,
+      result
+    };
+  }
+
+  throw new Error('Network response was not ok');
+}
+
 // Get the ESPN sports constant
 export const getSports = async () => {
   const response = await fetch(`${baseURL}/web-constants`);
