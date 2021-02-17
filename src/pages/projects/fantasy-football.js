@@ -1,6 +1,5 @@
 import React, { useEffect, useReducer } from 'react';
 import Container from 'react-bootstrap/Container';
-import Spinner from 'react-bootstrap/Spinner';
 
 import Layout from '../../components/layout';
 import SEO from '../../components/seo';
@@ -27,16 +26,6 @@ const initialState = {
   allScores: {},
   proTeamSchedules: {},
 };
-
-/*
-const reducer = (state, { field, value }) => {
-  console.log(field, value);
-  return {
-    ...state,
-    [field]: value,
-  }
-}
-*/
 
 const reducer = (state, pairs) => {
   //console.log(pairs);

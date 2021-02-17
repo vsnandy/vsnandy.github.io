@@ -1,7 +1,7 @@
 import * as helper from './espn-ffl-helper';
 
-//const baseURL = 'https://vsnandy.herokuapp.com/api/v1/espn/ffl';
-const baseURL = 'http://localhost:3000/api/v1/espn/ffl';
+const baseURL = 'https://vsnandy.herokuapp.com/api/v1/espn/ffl';
+//const baseURL = 'http://localhost:3000/api/v1/espn/ffl';
 
 // Gets the basic league info
 export const getBasicLeagueInfo = async (leagueId, seasonId) => {
@@ -171,6 +171,38 @@ export const getProTeamSchedules = async (seasonId) => {
   if(response.status === 200) {
     const result = await response.json();
     
+    return {
+      status: response.status,
+      result
+    };
+  }
+
+  throw new Error('Network response was not ok');
+}
+
+// Get nfl game by season, pro team, and scoring period
+export const getProGame = async (seasonId, proTeamId, scoringPeriodId) => {
+  const response = await fetch(`${baseURL}/season/${seasonId}/proTeam/${proTeamId}/scoringPeriod/${scoringPeriodId}/game`);
+
+  if(response.status === 200) {
+    const result = await response.json();
+
+    return {
+      status: response.status,
+      result
+    };
+  }
+
+  throw new Error('Network response was not ok');
+}
+
+// Get NFL Games for a week
+export const getNFLGamesForWeek = async (seasonId, scoringPeriodId) => {
+  const response = await fetch(`${baseURL}/season/${seasonId}/scoringPeriod/${scoringPeriodId}/games`);
+
+  if(response.status === 200) {
+    const result = await response.json();
+
     return {
       status: response.status,
       result

@@ -9,7 +9,7 @@ import Spinner from 'react-bootstrap/Spinner';
 
 import * as espn from '../../api/espn';
 import FFLNavbar from './ffl-navbar';
-import { LineChart, BarChart } from '../charts/charts';
+import { LineChart } from '../charts/charts';
 import { SmallSimpleTable } from '../tables/tables';
 
 import './team-info.css';

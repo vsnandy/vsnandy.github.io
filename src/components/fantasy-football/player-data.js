@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -9,11 +9,12 @@ import Accordion from 'react-bootstrap/Accordion';
 import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Tooltip from 'react-bootstrap/Tooltip';
 import { useRanger } from 'react-ranger';
 
 import * as espn from '../../api/espn';
 import FFLNavbar from './ffl-navbar';
-import * as helper from '../../api/espn-ffl-helper';
 
 ///////////////
 // CONSTANTS //
@@ -26,6 +27,12 @@ const teamImgUrl = "https://a.espncdn.com/i/teamlogos/nfl/500/";
 ///////////////
 // FUNCTIONS //
 ///////////////
+
+// Get the NFL Games for the week
+const getNFLGamesForWeek = async (state, scoringPeriodId) => {
+  const nflGames = await espn.getNFLGamesForWeek(state.seasonId, scoringPeriodId);
+  return nflGames.result.data;
+}
 
 // Get the top scorers for each position
 const getTopScorersForWeek = async (state, scoringPeriodId) => {
@@ -58,14 +65,23 @@ const getTopScorersForWeeks = async (state, scoringPeriodRange) => {
 }
 
 // If stat exists, return it else return 0
-const Stat = ({ name, vals, nval = 0, align = "left", xs="6", md="3", p="px-0", vtext="text-muted" }) => {
+const Stat = ({ name, underline=true, vals, nval = 0, align = "left", xs="6", md="3", p="px-0", vtext="text-muted", ttMessage=name }) => {
   let val = '';
   vals.forEach(v => v ? val += v : val += nval.toString());
+
+  const renderTooltip = (props) => (
+    <Tooltip id="stat-tooltip" {...props}>
+      {ttMessage}
+    </Tooltip>
+  );
+
   return (
     <Col xs={xs} md={md} className={p}>
-      <p className={`text-${align} m-0`} style={{ fontSize: '14px' }}>
-        {name}
-      </p>
+      <OverlayTrigger placement="top" overlay={renderTooltip}>
+        <p className={`text-${align} m-0`} style={{ fontSize: '14px' }}>
+          {underline ? <u>{name}</u> : name}
+        </p>
+      </OverlayTrigger>
       <p className={`text-${align} ${vtext} m-0`} style={{ fontSize: '14px' }}>
         {val}
       </p>
@@ -188,18 +204,23 @@ const WeekSelector = ({ state, scoringPeriodRange, setScoringPeriodRange, isMult
 }
 
 // Component to list Top 5 Scoring Leaders for position
-const ScoringLeaders = ({ state, pos, topScorers, isMulti, scoringPeriodRange }) => {
+const ScoringLeaders = ({ state, pos, topScorers, nflGames, isMulti, scoringPeriodRange }) => {
   const PlayerDetails = ({ p }) => {
     const stats = p.combinedStats.realStats.stats;
     const realPoints = p.combinedStats.realStats.appliedTotal;
     const projPoints = p.combinedStats.projStats.appliedTotal;
     const oppStats = p.combinedStats.oppStats;
-    let gameDate = null;
+
+    // Single week variables
+    let nflGame = [];
+    let playerGameStatus = {};
+    let oppGameStatus = {};
+
+    // Get the nfl game result for the player
     if(!isMulti) {
-      const schedule = state.proTeamSchedules.settings.proTeams.find(t => t.id === p.opponents[0].playerTeamId).proGamesByScoringPeriod;
-      const game = schedule[p.opponents[0].scoringPeriodId][0];
-      gameDate = helper.convertEpochToCST(game.date);
-      //console.log(gameDate);
+      nflGame = nflGames.find(g => g.id === p.opponents[0].gameId.toString());
+      playerGameStatus = nflGame.competitions[0].competitors.find(c => c.id === p.opponents[0].playerTeamId.toString());
+      oppGameStatus = nflGame.competitions[0].competitors.find(c => c.id === p.opponents[0].oppTeamId.toString());
     }
 
     return (
@@ -217,7 +238,16 @@ const ScoringLeaders = ({ state, pos, topScorers, isMulti, scoringPeriodRange })
                     vals={[p.opponents[0].loc === "away"
                           ? "@" + state.constants.proTeamsMap[p.opponents[0].oppTeamId].abbrev
                           : state.constants.proTeamsMap[p.opponents[0].oppTeamId].abbrev
-                        ]}
+                    ]}
+                    ttMessage="NFL opponent for week"
+                  />
+                  <Stat
+                    name="SCORE"
+                    vals={[playerGameStatus.winner
+                          ? "W " + playerGameStatus.score + "-" + oppGameStatus.score
+                          : "L " + playerGameStatus.score + "-" + oppGameStatus.score
+                    ]}
+                    ttMessage="NFL game score"
                   />
                 </Row>
               </div>
@@ -228,10 +258,13 @@ const ScoringLeaders = ({ state, pos, topScorers, isMulti, scoringPeriodRange })
                   PASSING
                 </h6>
                 <Row className="justify-content-start px-0 mx-0">
-                  <Stat name="C / A" vals={[stats[1],"/",stats[0]]} nval={"0/0"} md="auto" p="px-0 pr-3" />
-                  <Stat name="YDS" vals={[stats[3]]} md="3" />
-                  <Stat name="TD" vals={[stats[4]]} md="2" />
-                  <Stat name="INT" vals={[stats[20]]} md="2" />
+                  <Stat name={<span><u>C</u>/<u>A</u></span>} vals={[stats[1],"/",stats[0]]} 
+                    nval={"0/0"} md="auto" p="px-0 pr-3" underline={false}
+                    ttMessage="Completed Passes / Passing Attempts"
+                  />
+                  <Stat name="YDS" vals={[stats[3]]} md="3" ttMessage="Passing Yards" />
+                  <Stat name="TD" vals={[stats[4]]} md="2" ttMessage="Passing Touchdowns" />
+                  <Stat name="INT" vals={[stats[20]]} md="2" ttMessage="Interceptions Thrown" />
                 </Row>
               </div>
             }
@@ -241,9 +274,9 @@ const ScoringLeaders = ({ state, pos, topScorers, isMulti, scoringPeriodRange })
                   RUSHING
                 </h6>
                 <Row className="justify-content-start px-0 mx-0">
-                  <Stat name="CAR" vals={[stats[23]]} />
-                  <Stat name="YDS" vals={[stats[24]]} />
-                  <Stat name="TD" vals={[stats[25]]} />
+                  <Stat name="CAR" vals={[stats[23]]} ttMessage="Rushing Carries" />
+                  <Stat name="YDS" vals={[stats[24]]} ttMessage="Rushing Yards" />
+                  <Stat name="TD" vals={[stats[25]]} ttMessage="Rushing Touchdowns" />
                 </Row>
               </div>
             }
@@ -253,10 +286,10 @@ const ScoringLeaders = ({ state, pos, topScorers, isMulti, scoringPeriodRange })
                   RECEIVING
                 </h6>
                 <Row className="justify-content-start px-0 mx-0">
-                  <Stat name="REC" vals={[stats[53]]} />
-                  <Stat name="YDS" vals={[stats[42]]} />
-                  <Stat name="TD" vals={[stats[43]]} />
-                  <Stat name="TAR" vals={[stats[58]]} />
+                  <Stat name="REC" vals={[stats[53]]} ttMessage="Receptions" />
+                  <Stat name="YDS" vals={[stats[42]]} ttMessage="Receiving Yards" />
+                  <Stat name="TD" vals={[stats[43]]} ttMessage="Receiving Touchdowns" />
+                  <Stat name="TAR" vals={[stats[58]]} ttMessage="Receiving Targets" />
                 </Row>
               </div>
             }
@@ -266,9 +299,9 @@ const ScoringLeaders = ({ state, pos, topScorers, isMulti, scoringPeriodRange })
                   MISC
                 </h6>
                 <Row className="justify-content-start px-0 mx-0">
-                  <Stat name="2PC" vals={[stats[62]]} />
-                  <Stat name="FUML" vals={[stats[72]]} />
-                  <Stat name="TD" vals={[stats[10000]]} />
+                  <Stat name="2PC" vals={[stats[62]]} ttMessage="2 Point Conversions" />
+                  <Stat name="FUML" vals={[stats[72]]} ttMessage="Fumbles Lost" />
+                  <Stat name="TD" vals={[stats[10000]]} ttMessage="Miscellaneous Touchdowns" />
                 </Row>
               </div>
             }
@@ -278,16 +311,16 @@ const ScoringLeaders = ({ state, pos, topScorers, isMulti, scoringPeriodRange })
                   DEFENSE / SPECIAL TEAMS
                 </h6>
                 <Row className="justify-content-start px-0 mx-0 mb-1">
-                  <Stat name="TD" vals={[stats[105]]} />
-                  <Stat name="INT" vals={[stats[95]]} />
-                  <Stat name="FR" vals={[stats[96]]} />
-                  <Stat name="SCK" vals={[stats[99]]} />
+                  <Stat name="TD" vals={[stats[105]]} ttMessage="Touchdowns" />
+                  <Stat name="INT" vals={[stats[95]]} ttMessage="Interceptions" />
+                  <Stat name="FR" vals={[stats[96]]}  ttMessage="Fumble Recoveries" />
+                  <Stat name="SCK" vals={[stats[99]]} ttMessage="Sacks" />
                 </Row>
                 <Row className="justify-content-start px-0 mx-0">
-                  <Stat name="SFTY" vals={[stats[98]]} />
-                  <Stat name="BLK" vals={[stats[97]]} />
-                  <Stat name="PA" vals={[stats[120]]} />
-                  <Stat name="YA" vals={[stats[127]]} />
+                  <Stat name="SFTY" vals={[stats[98]]} ttMessage="Safeties" />
+                  <Stat name="BLK" vals={[stats[97]]} ttMessage="Blocked Kicks" />
+                  <Stat name="PA" vals={[stats[120]]} ttMessage="Points Allowed" />
+                  <Stat name="YA" vals={[stats[127]]} ttMessage="Yards Allowed" />
                 </Row>
               </div>
             }
@@ -297,15 +330,25 @@ const ScoringLeaders = ({ state, pos, topScorers, isMulti, scoringPeriodRange })
                   KICKING
                 </h6>
                 <Row className="justify-content-start px-0 mx-0 mb-1">
-                  <Stat name="FG39 / FGA39" vals={[stats[80], "/", stats[81]]} md="6"/>
-                  <Stat name="FG49 / FGA49" vals={[stats[77], "/", stats[78]]} md="6" />
+                  <Stat name={<span><u>FG39</u> / <u>FGA39</u></span>} vals={[stats[80], "/", stats[81]]} 
+                    md="6" underline={false} ttMessage="Field Goals Made / Attempted (0-39 yards)"
+                  />
+                  <Stat name={<span><u>FG49</u> / <u>FGA49</u></span>} vals={[stats[77], "/", stats[78]]} 
+                    md="6" underline={false} ttMessage="Field Goals Made / Attempted (40-49 yards)"
+                  />
                 </Row>
                 <Row className="justify-content-start px-0 mx-0 mb-1">
-                  <Stat name="FG50+ / FGA50+" vals={[stats[74], "/", stats[75]]} md="6" />
-                  <Stat name="FG / FM" vals={[stats[83], "/", stats[84]]} md="6" />
+                  <Stat name={<span><u>FG50</u> / <u>FGA50+</u></span>} vals={[stats[74], "/", stats[75]]} 
+                    md="6" underline={false} ttMessage="Field Goals Made / Attempted (50+ yards)"
+                  />
+                  <Stat name={<span><u>FG</u> / <u>FGA</u></span>} vals={[stats[83], "/", stats[84]]} 
+                    md="6" underline={false} ttMessage="Total Field Goals Made / Attempted"
+                  />
                 </Row>
                 <Row className="justify-content-start px-0 mx-0">
-                  <Stat name="XP / XPA" vals={[stats[86], "/", stats[87]]} md="6" />
+                  <Stat name={<span><u>XP</u> / <u>XPA</u></span>} vals={[stats[86], "/", stats[87]]} 
+                    md="6" underline={false} ttMessage="Extra Points Made / Attempted"
+                  />
                 </Row>
               </div>
             }
@@ -321,6 +364,7 @@ const ScoringLeaders = ({ state, pos, topScorers, isMulti, scoringPeriodRange })
                   projPoints.toFixed(2)
                 ]}
                 align="right" md="6" 
+                ttMessage="Projected Fantasy Points"
               />
               <Stat 
                 name="+/-" 
@@ -329,8 +373,9 @@ const ScoringLeaders = ({ state, pos, topScorers, isMulti, scoringPeriodRange })
                   ? "+" + (realPoints-projPoints).toFixed(2)
                   : (realPoints-projPoints).toFixed(2)
                 ]} 
-                align="right" md="6" 
+                align="right" md="6"
                 vtext={realPoints-projPoints > 0 ? "text-success" : "text-danger"}
+                ttMessage="Real Points +/- Over Projected Points"
               />
             </Row>
             <Row className="justify-content-end mx-0 px-0">
@@ -338,6 +383,7 @@ const ScoringLeaders = ({ state, pos, topScorers, isMulti, scoringPeriodRange })
                 name={isMulti ? "AVG OPR" : "OPR"}
                 vals={[oppStats.appliedRank.toFixed(2)]}
                 align="right" md="6"
+                ttMessage={isMulti ? "Average Opponent Positional Rank" : "Opponent Positional Rank"}
               />
               {/* Commenting out since stat is misleading
               <Stat
@@ -428,6 +474,7 @@ const Home = ({ state, dispatch }) => {
   const [scoringPeriodRange, setScoringPeriodRange] = useState([state.currentNFLWeek]);
 
   const [topScorers, setTopScorers] = useState(null);
+  const [nflGames, setNfLGames] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isMulti, setIsMulti] = useState(false);
 
@@ -437,14 +484,20 @@ const Home = ({ state, dispatch }) => {
     const fetchTopScorers = async () => {
       setIsLoading(true);
 
-      let data = {};
-      !isMulti 
-        ? data = await getTopScorersForWeek(state, scoringPeriodRange)
-        : data = await getTopScorersForWeeks(state, scoringPeriodRange);
+      let topScorers = {};
+      let games = {};
+      if(!isMulti) {
+        topScorers = await getTopScorersForWeek(state, scoringPeriodRange);
+        games = await getNFLGamesForWeek(state, scoringPeriodRange[0]);
+      } else {
+        topScorers = await getTopScorersForWeeks(state, scoringPeriodRange);
+      }
       
       if(!isCancelled) {
-        console.log(data);
-        setTopScorers(data);
+        console.log(topScorers);
+        console.log(games);
+        setTopScorers(topScorers);
+        setNfLGames(games);
         setIsLoading(false);
       }
     }
@@ -479,7 +532,7 @@ const Home = ({ state, dispatch }) => {
           <Row className="my-2">
             {positions.map((pos, idx) => (
               <Col key={idx} xs="12" sm="6" lg="4" className="mt-3">
-                <ScoringLeaders {...{state, pos, topScorers, isMulti, scoringPeriodRange}} />
+                <ScoringLeaders {...{state, pos, topScorers, nflGames, isMulti, scoringPeriodRange}} />
               </Col>
             ))}
           </Row>
