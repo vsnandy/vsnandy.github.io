@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import Chart from 'chart.js';
+import ChartAnnotation from 'chartjs-plugin-annotation';
 
 Chart.defaults.global.maintainAspectRatio = false;
 
 export const LineChart = ({ inputs }) => {
-  const [chartRef] = useState(React.createRef());
+  const [chartRef, setChartRef] = useState(React.createRef());
   const [myChart, setMyChart] = useState(null);
 
   useEffect(() => {
+    //console.log(inputs.datasets);
     const myOptions = {
       scales: {
         xAxes: [
