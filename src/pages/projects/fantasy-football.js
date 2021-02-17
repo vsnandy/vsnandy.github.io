@@ -1,12 +1,12 @@
 import React, { useEffect, useReducer } from 'react';
 import Container from 'react-bootstrap/Container';
-import Spinner from 'react-bootstrap/Spinner';
 
 import Layout from '../../components/layout';
 import SEO from '../../components/seo';
 import LeagueSearchCard from '../../components/fantasy-football/league-search-card';
 import TeamInfo from '../../components/fantasy-football/team-info';
 import LeagueOverview from '../../components/fantasy-football/league-overview';
+import PlayerData from '../../components/fantasy-football/player-data';
 import FFLBot from '../../components/fantasy-football/ffl-bot';
 
 
@@ -21,19 +21,11 @@ const initialState = {
   constants: {},
   currentTeam: {},
   currentMpId: null,
+  currentScoringPeriod: null,
   matchupInfo: {},
   allScores: {},
+  proTeamSchedules: {},
 };
-
-/*
-const reducer = (state, { field, value }) => {
-  console.log(field, value);
-  return {
-    ...state,
-    [field]: value,
-  }
-}
-*/
 
 const reducer = (state, pairs) => {
   //console.log(pairs);
@@ -75,6 +67,13 @@ const Home = () => {
         return (
           <Container fluid>
             <TeamInfo state={state} dispatch={dispatch} />
+            <FFLBot state={state} />
+          </Container>
+        );
+      case 'playerData':
+        return (
+          <Container fluid>
+            <PlayerData state={state} dispatch={dispatch} />
             <FFLBot state={state} />
           </Container>
         );

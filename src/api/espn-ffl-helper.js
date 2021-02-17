@@ -4,6 +4,42 @@
  * @description:: Helper functions for espn ffl data
 */
 
+////////////////////////
+// Reusable Constants //
+////////////////////////
+
+// Player Positions
+export const positionsMaps = () => {
+  return {
+    "all": [0,2,23,4,6],
+    "QB": [0],
+    "RB": [2],
+    "WR": [4],
+    "TE": [6],
+    "FLEX": [23],
+    "D/ST": [16],
+    "K": [17]
+  };
+}
+
+//////////////////////
+// Helper Functions //
+//////////////////////
+
+// Converts Epoch time to CST
+export const convertEpochToCST = (time) => {
+  //console.log(time);
+  var d = new Date(time);
+  //console.log(d);
+  var utc = d.getTime() + (d.getTimezoneOffset() * 60000);  //This converts to UTC 00:00
+  var nd = new Date(utc + (3600000*-6));
+  return nd.toLocaleString();
+}
+
+//////////////////////////////
+// FFL Bot Helper Functions //
+//////////////////////////////
+
 // Return player summary
 export const getPlayerSummary = (playerStats) => {
   return {
@@ -31,6 +67,6 @@ export const getPlayerPointsForWeek = (playerStats, scoringPeriodId) => {
 export const getTopScorer = (topScorers) => {
   return {
     playerName: topScorers[0].player.fullName,
-    totalPoints: topScorers[0].player.stats.find(s => s.statSourceId === 0 && s.statSplitTypeId === 1).appliedTotal
+    totalPoints: topScorers[0].player.stats.find(s => s.statSourceId === 0 && s.statSplitTypeId === 1).appliedTotal.toFixed(2)
   };
 }

@@ -130,6 +130,88 @@ export const getPlayerInfoByName = async (seasonId, playerName) => {
   throw new Error('Network response was not ok');
 }
 
+// Get the top scorers advanced stats for week for a position
+export const getTopScorersForWeek = async (leagueId, seasonId, scoringPeriodId, position) => {
+  const response = await fetch(`${baseURL}/league/${leagueId}/season/${seasonId}/scoringPeriod/${scoringPeriodId}/position/${encodeURIComponent(position)}/topScorers`);
+
+  if(response.status === 200) {
+    const result = await response.json();
+    const topScorers = result.data.players;
+
+    return {
+      status: response.status,
+      result: topScorers
+    };
+  }
+
+  throw new Error('Network response was not ok');
+}
+
+// Get the top positional scorers for a range of weeks
+export const getTopScorersForWeeks = async (leagueId, seasonId, startWeek, endWeek, position) => {
+  const response = await fetch(`${baseURL}/league/${leagueId}/season/${seasonId}/startWeek/${startWeek}/endWeek/${endWeek}/position/${encodeURIComponent(position)}/topScorers`);
+
+  if(response.status === 200) {
+    const result = await response.json();
+    const topScorers = result.data.players;
+
+    return {
+      status: response.status,
+      result: topScorers
+    };
+  }
+
+  throw new Error('Network response was not ok');
+}
+
+// Get the pro team schedules
+export const getProTeamSchedules = async (seasonId) => {
+  const response = await fetch(`${baseURL}/season/${seasonId}/proTeamSchedules`);
+
+  if(response.status === 200) {
+    const result = await response.json();
+    
+    return {
+      status: response.status,
+      result
+    };
+  }
+
+  throw new Error('Network response was not ok');
+}
+
+// Get nfl game by season, pro team, and scoring period
+export const getProGame = async (seasonId, proTeamId, scoringPeriodId) => {
+  const response = await fetch(`${baseURL}/season/${seasonId}/proTeam/${proTeamId}/scoringPeriod/${scoringPeriodId}/game`);
+
+  if(response.status === 200) {
+    const result = await response.json();
+
+    return {
+      status: response.status,
+      result
+    };
+  }
+
+  throw new Error('Network response was not ok');
+}
+
+// Get NFL Games for a week
+export const getNFLGamesForWeek = async (seasonId, scoringPeriodId) => {
+  const response = await fetch(`${baseURL}/season/${seasonId}/scoringPeriod/${scoringPeriodId}/games`);
+
+  if(response.status === 200) {
+    const result = await response.json();
+
+    return {
+      status: response.status,
+      result
+    };
+  }
+
+  throw new Error('Network response was not ok');
+}
+
 // Get the ESPN sports constant
 export const getSports = async () => {
   const response = await fetch(`${baseURL}/web-constants`);
@@ -165,7 +247,7 @@ export const getFflConstants = async() => {
 // Specific to ffl-bot //
 // ------------------- //
 
-export const getTopScorersForWeek = async (leagueId, seasonId, scoringPeriodId, position="all") => {
+export const botGetTopScorersForWeek = async (leagueId, seasonId, scoringPeriodId, position="all") => {
   //console.log("Grabbing topScorersForWeekByPosition: ", leagueId, seasonId, scoringPeriodId, position);
   const response = await fetch(`${baseURL}/league/${leagueId}/season/${seasonId}/scoringPeriod/${scoringPeriodId}/position/${encodeURIComponent(position)}/topScorers`);
 
@@ -186,7 +268,7 @@ export const getTopScorersForWeek = async (leagueId, seasonId, scoringPeriodId, 
   throw new Error('Network response was not ok');
 }
 
-export const getPlayerStatsForWeek = async (leagueId, seasonId, playerName, scoringPeriodId) => {
+export const botGetPlayerStatsForWeek = async (leagueId, seasonId, playerName, scoringPeriodId) => {
   //console.log("Grabbing playerStatsForWeek: ", leagueId, seasonId, scoringPeriodId, playerName);
   // make sure playerName has capitalized first letters
   if(!playerName.toLowerCase().includes("d/st")) {

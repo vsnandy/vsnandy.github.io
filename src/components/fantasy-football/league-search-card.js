@@ -43,12 +43,15 @@ const LeagueSearchCard = ({ state, dispatch }) => {
     try {
       const leagueInfo = await espn.getLeagueSettings(details.leagueId, details.seasonId);
       const currentMpId = leagueInfo.result.data.status.currentMatchupPeriod;
+      const currentScoringPeriod = leagueInfo.result.data.status.latestScoringPeriod > leagueInfo.result.data.status.finalScoringPeriod
+                                   ? leagueInfo.result.data.status.finalScoringPeriod
+                                   : leagueInfo.result.data.status.latestScoringPeriod;
       const teamInfo = await espn.getTeams(details.leagueId, details.seasonId);
-      const currentTeam = await espn.getTeam(details.leagueId, details.seasonId, currentMpId, 1);
+      const currentTeam = await espn.getTeam(details.leagueId, details.seasonId, currentScoringPeriod, 1);
       const allScores = await espn.getAllScores(details.leagueId, details.seasonId);
       const constants = await espn.getFflConstants();
+      const proTeamSchedules = await espn.getProTeamSchedules(details.seasonId);
 
-      console.log("After API calls");
       setError(false);
       setIsLoading(false);
       setValidated(true);
@@ -62,8 +65,11 @@ const LeagueSearchCard = ({ state, dispatch }) => {
         { field: 'currentTeam', value: currentTeam.result.data.team },
         { field: 'currentMember', value: currentTeam.result.data.member },
         { field: 'currentMpId', value: currentMpId },
+        { field: 'currentScoringPeriod', value: currentScoringPeriod },
+        { field: 'currentNFLWeek', value: currentScoringPeriod },
         { field: 'allScores', value: allScores.result.data },
-        { field: 'page', value: 'leagueOverview' }
+        { field: 'page', value: 'leagueOverview' },
+        { field: 'proTeamSchedules', value: proTeamSchedules.result.data }
       ]);
       return;
     } catch (err) {

@@ -1,5 +1,6 @@
 import React from 'react';
 import Navbar from 'react-bootstrap/Navbar';
+import NavDropdown from 'react-bootstrap/NavDropdown';
 import Nav from 'react-bootstrap/Nav';
 
 const FFLNavbar = ({ state, dispatch }) => {
@@ -17,11 +18,16 @@ const FFLNavbar = ({ state, dispatch }) => {
             <Nav.Link eventKey="leagueSearch">League Search</Nav.Link>
           </Nav.Item>
           <Nav.Item>
-            <Nav.Link eventKey="leagueOverview">League Overview</Nav.Link>
+            <Nav.Link eventKey="leagueOverview">League</Nav.Link>
           </Nav.Item>
           <Nav.Item>
-            <Nav.Link eventKey="teamInfo">Team Info</Nav.Link>
+            <Nav.Link eventKey="teamInfo">Team</Nav.Link>
           </Nav.Item>
+          <NavDropdown title="Player" id="player-data-dropdown" alignRight>
+            <NavDropdown.Item eventKey="playerData">
+              Scoring Leaders
+            </NavDropdown.Item>
+          </NavDropdown>
         </Nav>
       </Navbar.Collapse>
     </Navbar>

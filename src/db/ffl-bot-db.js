@@ -13,7 +13,7 @@ export const questionBank = [
     },
     inputVars: ["playerName", "scoringPeriodId"],
     outputVars: ["playerName", "scoringPeriodId", "totalPoints"],
-    api: "getPlayerStatsForWeek",
+    api: "botGetPlayerStatsForWeek",
     apiParams: ["state.leagueId", "state.seasonId", "playerName", "scoringPeriodId"]
   },
   {
@@ -26,8 +26,8 @@ export const questionBank = [
     },
     inputVars: ["position"],
     outputVars: ["position", "playerName", "totalPoints"],
-    api: "getTopScorersForWeek",
-    apiParams: ["state.leagueId", "state.seasonId", "state.leagueInfo.status.currentMatchupPeriod", "position"]
+    api: "botGetTopScorersForWeek",
+    apiParams: ["state.leagueId", "state.seasonId", "state.currentNFLWeek", "position"]
   }
 ];
 
