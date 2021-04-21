@@ -14,13 +14,13 @@ const Projects = () => {
   const PCard = ({ project: { title, category, description, icon, link }}) => (
     <Col xs={12} className="d-flex align-items-stretch justify-content-center">
       <Card bg="light" text="dark" border="dark" className="align-items-center mb-4" style={{'width': '25em'}}>
-        <Card.Header className="d-flex container-fluid align-items-center">
+        <Card.Header className="d-flex container-fluid">
           <Container className="p-0">{category}</Container>
           <Link to={link} className="stretched-link"><FaArrowRight size="1.3em" color="gray" /></Link>
         </Card.Header>
-        <Card.Body>
-          <Card.Title>{title}</Card.Title>
-          <Card.Text>{description}</Card.Text>
+        <Card.Body className="container-fluid">
+          <Card.Title className="text-center">{title}</Card.Title>
+          <Card.Text className="text-center">{description}</Card.Text>
         </Card.Body>
         {icon}
       </Card>
@@ -45,38 +45,3 @@ const App = () => (
 );
 
 export default App;
-/*
-class Projects extends React.Component {
-  state = {
-    projects: null,
-  };
-
-  componentDidMount() {
-    this.setState({ projects: projects });
-  }
-
-  renderCards = () => {
-    if(this.state.projects != null) return this.state.projects.map(project => {
-      return <ProjectCard key={project.id} details={project} />
-    });
-
-    return <div />;
-  }
-
-  render() {
-    return (
-      <Layout>
-        <main className="page">
-          <SEO title="Projects" />
-          <header className="top-header">Projects</header>
-          <div className="project-container">
-            {this.renderCards()}
-          </div>
-        </main>
-      </Layout>
-    );
-  }
-}
-
-export default Projects;
-*/
