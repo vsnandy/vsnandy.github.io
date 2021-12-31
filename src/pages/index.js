@@ -12,6 +12,7 @@ import Layout from "../components/layout";
 import SEO from "../components/seo";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
+import '../styles/global.css';
 
 export const ProfilePic = () => {
   const data = useStaticQuery(graphql`
@@ -50,21 +51,24 @@ const Home = () => (
         </a>
       </Col>
       <Col xs="auto">
-        <a href="https://www.linkedin.com/in/varun-nandyal-606946125/" aria-label="LinkedIn">
+        <a href="https://www.linkedin.com/in/varun-nandyal/" aria-label="LinkedIn">
           <FaLinkedin size="2em" color="maroon" />
         </a>
       </Col>
     </Row>
     <Row xs={1} className="justify-content-center mt-4">
       <Col xs={10} md={8} lg={6} className="text-wrap">
-        <p>Hi, I'm Varun. Welcome to my site!</p>
+        <p>Hi, I'm <b>Varun</b>. Welcome to my site!</p>
         <p>
-          I'm a software engineer, currently working at a large consulting firm.
-          My current area of focus is in data science and visualization,
-          but I enjoy learning about new technologies.
+          I'm a Software Engineer, currently working at Capital One.
+          My current area of focus is Full Stack, specifically using <b>React</b> and <b>Node.js</b>.
         </p>
         <p>
-          I'll be using this site to showcase the projects I've been working on.
+          Outside of work, I enjoy playing soccer, running on the Chicago
+          lakefront trail, and trying out various pizza joints in the city.
+        </p>
+        <p>
+          I'll be using this site to showcase the projects I've been working on. 
           I hope you like it!
         </p>
       </Col>
