@@ -33,9 +33,18 @@ export const work = [
     title: "Technology Analyst",
     company: "Accenture",
     start_date: "Aug 2019",
-    end_date: "Present",
+    end_date: "Aug 2021",
     location: "Chicago, IL",
     icon: "accenture-logo.png"
+  },
+  {
+    id: 5,
+    title: "Software Engineer",
+    company: "Capital One",
+    start_date: "Sept 2021",
+    end_date: "Present",
+    location: "Chicago, IL",
+    icon: "capital-one-logo.png"
   }
 ];
 

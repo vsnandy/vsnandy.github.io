@@ -3,6 +3,20 @@ import Table from 'react-bootstrap/Table';
 
 import './tables.css';
 
+export const convertToDictArray = (headers, rows) => {
+  return rows.map(row => {
+    let itemDict = {};
+    headers.forEach((header, idx) => {
+      itemDict[header] = row[idx];
+    });
+    return itemDict;
+  });
+}
+
+export const convertToArrays = (itemDict) => {
+  return [];
+}
+
 export const SimpleTable = ({ headers, rows }) => {
   return (
     <Table bordered hover striped style={{ overflow: 'auto' }}>

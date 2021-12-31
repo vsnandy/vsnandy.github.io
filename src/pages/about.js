@@ -51,7 +51,7 @@ const Image = ({ src, alt, ...rest }) => {
 
 const Work = ({ item }) => {
   return (
-    <Row className="justify-content-start  border-bottom border-dark py-2">
+    <Row className="justify-content-start border-bottom border-dark py-2">
       <Col xs="auto">
         <Image src={item.icon} style={{ width: '4.9rem' }} className="mr-2" alt="Logo" />
       </Col>
@@ -97,21 +97,21 @@ const About = () => {
         </p>
         <p>
           Please reach out to me through <a href="mailto:varun.nandyal@gmail.com" style={{ textDecoration: "none" }}>Email</a> or 
-          on <a href="https://www.linkedin.com/in/varun-nandyal-606946125/" style={{ textDecoration: "none" }}>LinkedIn</a> if you would like to get in touch.
+          on <a href="https://www.linkedin.com/in/varun-nandyal/" style={{ textDecoration: "none" }}>LinkedIn</a> if you would like to get in touch.
           Additionally, check out my <a href="https://github.com/vsnandy" style={{ textDecoration: "none" }}>GitHub</a> if you're interested in seeing the code behind my projects!
         </p>
         <p>
           Here's a brief overview of my work experience and educational background:
         </p>
+        <h3 className="border-top border-dark pt-3">Work</h3>
+        <Container className="d-flex flex-column-reverse">
+          {work.map((w) => <Work key={w.id} item={w} /> )}
+        </Container>
+        <h3 className="pt-3">Education</h3>
+        <Container className="d-flex flex-column-reverse">
+          {education.map((e) => <Education key={e.id} item={e} /> )}
+        </Container>
       </Col>
-      <h3 className="border-top border-dark pt-3">Work</h3>
-      <Container className="d-flex flex-column-reverse">
-        {work.map((w) => <Work key={w.id} item={w} /> )}
-      </Container>
-      <h3 className="pt-3">Education</h3>
-      <Container className="d-flex flex-column-reverse">
-        {education.map((e) => <Education key={e.id} item={e} /> )}
-      </Container>
     </Container>
   );
 }

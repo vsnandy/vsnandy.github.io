@@ -1,7 +1,7 @@
 import * as helper from './espn-ffl-helper';
 
-//const baseURL = 'https://vsnandy.herokuapp.com/api/v1/espn/ffl';
-const baseURL = 'http://localhost:3000/api/v1/espn/ffl';
+const baseURL = 'https://vsnandy.herokuapp.com/api/v1/espn/ffl';
+//const baseURL = 'http://localhost:3000/api/v1/espn/ffl';
 
 // Gets the basic league info
 export const getBasicLeagueInfo = async (leagueId, seasonId) => {

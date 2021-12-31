@@ -3,6 +3,7 @@ import Container from 'react-bootstrap/Container';
 
 import Layout from '../../components/layout';
 import SEO from '../../components/seo';
+import NotFound from '../404';
 
 const Home = () => {
   return (
@@ -12,7 +13,7 @@ const Home = () => {
   );
 }
 
-const App = () => {
+const AppSoon = () => {
   return (
     <Layout>
       <SEO title="MN COVID" />
@@ -20,5 +21,9 @@ const App = () => {
     </Layout>
   );
 }
+
+const App = () => (
+  <NotFound />
+);
 
 export default App;

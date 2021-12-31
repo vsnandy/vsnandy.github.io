@@ -1,5 +1,6 @@
 import React from 'react';
 import { GiAmericanFootballHelmet, GiSyringe, GiDiscGolfBasket, GiBasketballJersey } from 'react-icons/gi';
+import { AiOutlineStock } from 'react-icons/ai';
 
 import '../styles/page.css';
 
@@ -11,6 +12,15 @@ export const projects = [
     description: "Explore your ESPN league's fantasy football data all in one place.",
     icon: <GiAmericanFootballHelmet size="3rem" color="maroon" className="mb-2" />,
     link: "/projects/fantasy-football/"
+  },
+  /*
+  {
+    id: 2,
+    category: "Finance",
+    title: "Stock Market Analysis",
+    description: "Check out various stock charts for stocks on the US stock exchange.",
+    icon: <AiOutlineStock size="3rem" color="maroon" className="mb-2" />,
+    link: "/projects/stock-market-analysis/"
   },
   {
     id: 2,
@@ -29,11 +39,12 @@ export const projects = [
     link: "/projects/disc-golf"
   },
   {
-    id: 4,
+    id: 3,
     category: "Sports",
     title: "NBA Analytics",
     description: "Explore NBA data.",
     icon: <GiBasketballJersey size="3rem" color="maroon" className="mb-2" />,
     link: "/projects/nba-analytics"
   },
+  */
 ];
