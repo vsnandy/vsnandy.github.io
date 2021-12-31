@@ -52,12 +52,31 @@ export const education = [
   {
     id: 1,
     institution: "University of Minnesota",
-    degree: "Bachelor of Science - BS",
+    degree: "Bachelor of Science \u2013 BS",
     major: "Computer Engineering",
     minor: "Management",
     start_date: "2015",
     end_date: "2019",
     location: "Minneapolis, MN",
     icon: "umn-logo.png"
+  }
+]
+
+export const certs = [
+  {
+    id: 1,
+    title: "Microsoft Azure Fundamentals (AZ-900)",
+    provider: "Microsoft",
+    issued: "Aug 2020",
+    expires: "",
+    icon: "msft-logo.png"
+  },
+  {
+    id: 2,
+    title: "AWS Certified Solutions Architect - Associate",
+    provider: "Amazon",
+    issued: "Dec 2021",
+    expires: "Dec 2024",
+    icon: "amazon-logo.png"
   }
 ]

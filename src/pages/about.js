@@ -8,7 +8,7 @@ import Row from 'react-bootstrap/Row';
 import SEO from '../components/seo';
 import Layout from '../components/layout';
 
-import { work, education } from '../db/about-db';
+import { work, education, certs } from '../db/about-db';
 
 // GraphQL query to grab logos
 const Image = ({ src, alt, ...rest }) => {
@@ -51,8 +51,8 @@ const Image = ({ src, alt, ...rest }) => {
 
 const Work = ({ item }) => {
   return (
-    <Row className="justify-content-start border-bottom border-dark py-2">
-      <Col xs="auto">
+    <Row className="justify-content-start border-bottom border-dark py-3">
+      <Col xs="auto" className="align-self-center">
         <Image src={item.icon} style={{ width: '4.9rem' }} className="mr-2" alt="Logo" />
       </Col>
       <Col className="px-0">
@@ -67,7 +67,7 @@ const Work = ({ item }) => {
 
 const Education = ({ item }) => {
   return (
-    <Row className="justify-content-start border-bottom border-dark py-2">
+    <Row className="justify-content-start border-bottom border-dark py-3">
       <Col xs="auto">
         <Image src={item.icon} style={{ width: '4.9rem' }} className="mr-2" alt="Logo" />
       </Col>
@@ -76,6 +76,23 @@ const Education = ({ item }) => {
         <p style={{ fontSize: '0.9rem' }} className="m-0">{item.degree}, {item.major}</p>
         <p style={{ fontSize: '0.9rem' }} className="m-0 text-muted">{item.start_date} &ndash; {item.end_date}</p>
         <p style={{ fontSize: '0.9rem' }} className="m-0 text-muted">{item.location}</p>
+      </Col>
+    </Row>
+  );
+}
+
+const Certification = ({ item }) => {
+  const issued = item.expires ? `Issued ${item.issued} \u00B7 Expires ${item.expires}` : `Issued ${item.issued}`;
+
+  return (
+    <Row className="justify-content-start border-bottom border-dark py-3">
+      <Col xs="auto" className="align-self-center">
+        <Image src={item.icon} style={{ width: '4.9rem' }} className="mr-2" alt="Logo" />
+      </Col>
+      <Col className="px-0">
+        <header style={{ fontWeight: 500, fontSize: '1rem' }}>{item.title}</header>
+        <p style={{ fontSize: '0.9rem' }} className="m-0">{item.provider}</p>
+        <p style={{ fontSize: '0.9rem' }} className="m-0 text-muted">{issued}</p>
       </Col>
     </Row>
   );
@@ -92,7 +109,7 @@ const About = () => {
           but I am currently working in the software field. 
         </p>
         <p>
-          Specifically, I have gained expertise in <b>Cloud</b> technologies (Microsoft Azure), <b>Data Visualization</b> (Power BI), <b>Agile</b>, and <b>DevOps</b>.
+          Specifically, I have gained expertise in <b>Cloud</b> technologies (Microsoft Azure, AWS), <b>Data Visualization</b> (Power BI, D3.js), <b>Agile</b>, and <b>DevOps</b>.
           I'm always eager to learn new things and I'll be using this site to document my side projects.
         </p>
         <p>
@@ -110,6 +127,10 @@ const About = () => {
         <h3 className="pt-3">Education</h3>
         <Container className="d-flex flex-column-reverse">
           {education.map((e) => <Education key={e.id} item={e} /> )}
+        </Container>
+        <h3 className="pt-3">Licenses & Certifications</h3>
+        <Container className="d-flex flex-column-reverse">
+          {certs.map((c) => <Certification key={c.id} item={c} />)}
         </Container>
       </Col>
     </Container>

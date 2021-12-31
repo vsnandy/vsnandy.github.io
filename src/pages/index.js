@@ -61,8 +61,7 @@ const Home = () => (
         <p>Hi, I'm <b>Varun</b>. Welcome to my site!</p>
         <p>
           I'm a Software Engineer, currently working at Capital One.
-          My current area of focus is in Data Engineering,
-          but I enjoy learning about new technologies across the stack.
+          My current area of focus is Full Stack, specifically using <b>React</b> and <b>Node.js</b>.
         </p>
         <p>
           Outside of work, I enjoy playing soccer, running on the Chicago
