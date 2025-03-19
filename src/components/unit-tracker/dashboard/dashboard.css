@@ -1,0 +1,82 @@
+.seasonal-dashboard {
+    margin: 10px 0;
+}
+
+.year-dropdown {
+
+}
+
+.bettors-container {
+    margin-top: 15px;
+}
+
+.bettor-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.bettor-name {
+    font-size: 24px;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.bettor-total-pos {
+    font-size: 24px;
+    font-weight: 500;
+    color: green;
+}
+
+.bettor-total-neg {
+    font-size: 24px;
+    font-weight: 500;
+    color: red;
+}
+
+.bettor-week-text {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.bettor-week-val-pos {
+    color: green;
+}
+
+.bettor-week-val-neg {
+    color: red;
+}
+
+.dashboard-modal-header {
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+.bettor-modal-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: 25px;
+}
+
+.bettor-modal-name {
+    font-size: 36px;
+    font-weight: 500;
+    text-transform: lowercase;
+}
+
+.bettor-modal-name::first-letter {
+    text-transform: uppercase;
+}
+
+.bettor-week-header {
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+}

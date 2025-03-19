@@ -2,13 +2,13 @@ import React, { useState, useReducer, useEffect } from 'react';
 import Container from 'react-bootstrap/Container';
 import Image from 'react-bootstrap/Image';
 
-import LeagueSummary from '../../components/nba/league-summary';
 import Layout from '../../components/layout';
+import LeagueSummary from '../../components/nba/league-summary';
 import SEO from '../../components/seo';
 import * as nba from '../../api/nba';
 import NotFound from '../404';
 
-import { SmallSimpleTable } from '../../components/tables/tables';
+//import { SmallSimpleTable } from '../../components/tables/tables';
 
 //const playerImgUrl = 'https://cdn.nba.com/headshots/nba/latest/1040x760';
 //const  playerImgUrl = 'https://ak-static.cms.nba.com/wp-content/uploads/headshots/nba/1610612744/2021/260x190/201939.png'
@@ -54,9 +54,12 @@ const LeagueLeadersTable = () => {
     const headers = leaders['resultSet']['headers'].slice(1);
     const rows = leaders['resultSet']['rowSet'].map(row => row.slice(1));
 
+    return null;
+    /*
     return (
       <SmallSimpleTable headers={headers} rows={rows} />
     );
+    */
   } else {
     return null;
   }
@@ -97,9 +100,12 @@ const FantasyLeadersTable = () => {
     //const headers = leaders['headers']
     //const rows = leaders['rowSet']
 
+    return null;
+    /*
     return (
       <SmallSimpleTable headers={['IMG', ...headers]} rows={rows} />
     );
+    */
   } else {
     return null;
   }
@@ -142,7 +148,7 @@ const Home = () => {
 const AppSoon = () => {
   return (
     <Layout>
-      <SEO title="NBA Analytics" />
+      <SEO title="NBA Analytics" description="NB Analytics Project" />
       <Home />
     </Layout>
   );

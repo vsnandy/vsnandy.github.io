@@ -1,0 +1,69 @@
+.slip-header {
+    color: black;
+}
+
+.prop-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.player-headshot {
+    width: 25%;
+}
+
+.game-teams {
+    width: 25%;
+    display: flex;
+    flex-direction: column;
+}
+
+.player-prop {
+    display: flex;
+    flex-direction: column;
+    font-size: 18px;
+    margin-left: 15px;
+    width: 50%;
+}
+
+.game-prop {
+    display: flex;
+    flex-direction: column;
+    font-size: 18px;
+    margin-left: 15px;
+    width: 50%;
+}
+
+.outcome-icon {
+    display: flex;
+    width: 25%;
+    justify-content: end;
+    align-self: center;
+}
+
+.total-prop-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.prop-tile-group {
+    width: 100%;
+}
+
+.total-header {
+    width: 25%;
+}
+
+.remove-prop-from-tile {
+    display: flex;
+    width: 25%;
+    align-items: center;
+    justify-content: end;
+}
+
+.total-prop-tile {
+    margin: 10px;
+    text-align: right;
+}

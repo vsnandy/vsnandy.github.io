@@ -76,9 +76,10 @@ const Home = () => (
   </Container>
 )
 
+
 const IndexPage = () => (
   <Layout>
-    <SEO title="Varun Nandyal" />
+    <SEO title="Varun Nandyal" description="vsnandy homepage" />
     <Home />
   </Layout>
 );

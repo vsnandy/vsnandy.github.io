@@ -1,0 +1,17 @@
+.prop-container {
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.props-list {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.remove-prop {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

@@ -1,0 +1,42 @@
+.player-search-list {
+    max-height: 350px;
+    overflow: scroll;
+    margin-bottom: 10px;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 5px;
+    border-color: lightgray;
+}
+
+.player-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 35px;
+}
+
+.player-item-title {
+    display: flex;
+    align-items: baseline;
+}
+
+.player-item-name {
+    font-size: 18px;
+    font-weight: 400;
+    margin: 0 10px 0 0;
+    padding: 0;
+}
+
+.player-item-number {
+    font-size: 16px;
+    margin: 0;
+    padding: 0;
+    color: gray;
+}
+
+.player-search-bar {
+    margin: 0px;
+    padding: 0px;
+    display: flex;
+    flex-direction: column;
+}

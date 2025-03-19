@@ -9,7 +9,7 @@ const Contact = () => {
   return (
     <Layout>
       <main className="page">
-        <SEO title="Contact" />
+        <SEO title="Contact" description="Contact vsnandy" />
         <header className="top-header">Reach Me</header>
         <div className="medium-text">
           

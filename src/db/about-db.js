@@ -39,7 +39,7 @@ export const work = [
   },
   {
     id: 5,
-    title: "Software Engineer",
+    title: "Sr. Software Engineer",
     company: "Capital One",
     start_date: "Sept 2021",
     end_date: "Present",

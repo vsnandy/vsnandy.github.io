@@ -1,6 +1,8 @@
 # Test files
 .test
 
+.idea
+
 # Logs
 logs
 *.log

@@ -4,6 +4,8 @@ import Img from 'gatsby-image';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 
+import './navbar.css';
+
 // GraphQL query to grab logos
 const Image = ({ src, alt, ...rest }) => {
   const data = useStaticQuery(graphql`
@@ -44,15 +46,15 @@ const Image = ({ src, alt, ...rest }) => {
 }
 
 const MyNavbar = () => (
-  <Navbar style={{ "background": 'maroon' }} variant="dark" expand="sm" className="active">
+  <Navbar style={{ "background": 'maroon' }} variant="dark" expand="sm" className="px-3">
     <Link to="/" className="text-decoration-none"><Navbar.Brand as="span">Varun Nandyal</Navbar.Brand></Link>
     {/*<Image src="varun-bitmoji.png" style={{ width: '35px' }} alt="Bitmoji" />*/}
     <Navbar.Toggle aria-controls="basic-navbar-nav" />
-    <Navbar.Collapse id="basic-navbar-nav">
-      <Nav className="ml-auto">
-        <Link to="/" activeClassName="active" className="text-decoration-none"><Nav.Link as="span">Home</Nav.Link></Link>
-        <Link to="/projects/" activeClassName="active" className="text-decoration-none"><Nav.Link as="span">Projects</Nav.Link></Link>
-        <Link to="/about/" activeClassName="active" className="text-decoration-none"><Nav.Link as="span">About</Nav.Link></Link>
+    <Navbar.Collapse id="basic-navbar-nav" className="justify-content-end">
+      <Nav className="ml-auto" defaultActiveKey="/">
+        <Nav.Link eventKey="/" as="span"><Link to="/" className="nav-link">Home</Link></Nav.Link>
+        <Nav.Link eventKey="projects" as="span"><Link to="/projects/" className="nav-link">Projects</Link></Nav.Link>
+        <Nav.Link eventKey="about" as="span"><Link to="/about/" className="nav-link">About</Link></Nav.Link>
       </Nav>
     </Navbar.Collapse>
   </Navbar>

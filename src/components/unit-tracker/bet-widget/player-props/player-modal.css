@@ -1,0 +1,74 @@
+.player-modal {
+    min-width: 75%;
+}
+
+.modal-title {
+    text-align: center;
+}
+
+.modal-stat-body {
+    border-bottom-color: var(--bs-border-color);
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    display: flex;
+    flex-direction: row;
+}
+
+.modal-stats {
+    min-width: 60%;
+}
+
+.modal-stat-header {
+    text-align: center;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.modal-first-name {
+    font-size: 22px;
+    font-weight: 300;
+}
+
+.modal-last-name {
+    font-size: 28px;
+    font-weight: 500;
+}
+
+.modal-player-info {
+    width: 100%;
+    margin-left: 0px;
+    padding-left: 0px;
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+}
+
+.team-name {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.modal-stat-card-body {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.stat-abbr {
+    text-align: center;
+    font-size: 14px;
+    color: gray;
+}
+
+.stat-val {
+    text-align: center;
+    font-size: 28px;
+    font-weight: 500;
+}
+
+.stat-rank {
+    text-align: center;
+    font-size: 14px;
+    color: gray;
+}

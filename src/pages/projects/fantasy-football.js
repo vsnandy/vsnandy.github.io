@@ -93,7 +93,7 @@ const Home = () => {
 const App = () => {
   return (
     <Layout>
-      <SEO title="Fantasy Football" />
+      <SEO title="Fantasy Football" description="Fantasy Football Project" />
       <Home />
     </Layout>
   );

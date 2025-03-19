@@ -15,24 +15,22 @@ import "./layout.css"
 
 const Layout = ({ children }) => {
   return (
-    <>
-      <div
-        className="app-container"
-      >
-        <Navbar />
-        <main>{children}</main>
-        {/*}
-        <footer style={{
-          marginTop: `2rem`
-        }}>
-          © {new Date().getFullYear()}, Built with
-          {` `}
-          <a href="https://www.gatsbyjs.com">Gatsby</a>
-        </footer>
-      */}
-      </div>
-    </>
-  )
+    <div
+      className="app-container"
+    >
+      <Navbar />
+      <main>{children}</main>
+      {/*}
+      <footer style={{
+        marginTop: `2rem`
+      }}>
+        © {new Date().getFullYear()}, Built with
+        {` `}
+        <a href="https://www.gatsbyjs.com">Gatsby</a>
+      </footer>
+    */}
+    </div>
+  );
 }
 
 Layout.propTypes = {
