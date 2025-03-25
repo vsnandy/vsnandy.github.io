@@ -11,7 +11,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
-import { useRanger } from 'react-ranger';
+import { useRanger } from '@tanstack/react-ranger';
 
 import * as espn from '../../api/espn';
 import FFLNavbar from './ffl-navbar';

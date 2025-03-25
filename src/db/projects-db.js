@@ -23,7 +23,7 @@ export const projects = [
     link: "/projects/stock-market-analysis/"
   },
   {
-    id: 2,
+    id: 3,
     category: "Health",
     title: "MN COVID Vaccine",
     description: "Look for available vaccine appointments in Minnesota",
@@ -31,7 +31,7 @@ export const projects = [
     link: "/projects/mn-covid/"
   },
   {
-    id: 3,
+    id: 4,
     category: "Sports",
     title: "Disc Golf Tracker",
     description: "Keep track of your disc golf courses, scores, discs, and more.",
@@ -39,7 +39,7 @@ export const projects = [
     link: "/projects/disc-golf"
   },
   {
-    id: 3,
+    id: 5,
     category: "Sports",
     title: "NBA Analytics",
     description: "Explore NBA data.",
@@ -47,4 +47,12 @@ export const projects = [
     link: "/projects/nba-analytics"
   },
   */
+  {
+    id: 6,
+    category: "Sports",
+    title: "WAPIT",
+    description: "Weighted Adjusted Points in Tournament",
+    icon: <GiBasketballJersey size="3rem" color="maroon" className="mb-2" />,
+    link: "/projects/wapit"
+  }
 ];
