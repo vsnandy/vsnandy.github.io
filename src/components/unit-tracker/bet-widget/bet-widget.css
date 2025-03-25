@@ -1,0 +1,15 @@
+.bet-nav-link {
+    color: gray;
+}
+
+.bet-nav-link:hover,
+.bet-nav-link-active {
+    color: black;
+    font-weight: 500;
+}
+
+.widget-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}

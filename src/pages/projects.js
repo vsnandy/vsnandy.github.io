@@ -10,6 +10,7 @@ import SEO from '../components/seo';
 import Layout from '../components/layout';
 import { projects } from '../db/projects-db';
 
+
 const Projects = () => {
   const PCard = ({ project: { title, category, description, icon, link }}) => (
     <Col xs={12} className="d-flex align-items-stretch justify-content-center">
@@ -31,7 +32,7 @@ const Projects = () => {
     <Container fluid>
       <h1 className="text-center my-3">Projects</h1>
       <Row xs={1} sm={2} lg={3} className="d-flex flex-wrap">
-        {projects.map(project => <PCard key={project.id} project={project} /> )}
+        {projects.filter(project => project.active).map(project => <PCard key={project.id} project={project} /> )}
       </Row>
     </Container>
   );
@@ -39,7 +40,7 @@ const Projects = () => {
 
 const App = () => (
   <Layout>
-    <SEO title="Projects" />
+    <SEO title="Projects" description="vsnandy project" />
     <Projects />
   </Layout>
 );

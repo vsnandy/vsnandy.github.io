@@ -520,7 +520,7 @@ const LineChart = () => {
 const AppSoon = () => {
   return (
     <Layout>
-      <SEO title="Stocks" />
+      <SEO title="Stocks" description="Stock Market Analysis Project" />
       <h1 className="text-center my-3">Stock Market Analysis</h1>
       <StockChart />
     </Layout>

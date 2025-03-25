@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import Chart from 'chart.js';
-import ChartAnnotation from 'chartjs-plugin-annotation';
+//import React, { useState, useEffect } from 'react';
+//import Chart from 'chart.js';
+//import ChartAnnotation from 'chartjs-plugin-annotation';
 
+/*
 Chart.defaults.global.maintainAspectRatio = false;
 
 export const LineChart = ({ inputs }) => {
@@ -154,3 +155,4 @@ export const BarChart = ({ inputs }) => {
     <canvas ref={chartRef} />
   );
 }
+*/

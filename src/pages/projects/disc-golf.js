@@ -16,7 +16,7 @@ const Home = () => {
 const AppSoon = () => {
   return (
     <Layout>
-      <SEO title="Disc Golf Tracker" />
+      <SEO title="Disc Golf Tracker" description="Disc Golf Tracker" />
       <Home />
     </Layout>
   );

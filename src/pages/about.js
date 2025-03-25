@@ -139,7 +139,7 @@ const About = () => {
 
 const App = () => (
   <Layout>
-    <SEO title="About" />
+    <SEO title="About" description="About vsnandy" />
     <About />
   </Layout>
 )
