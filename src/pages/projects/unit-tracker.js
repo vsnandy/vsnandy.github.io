@@ -7,7 +7,7 @@ import awsExports from '../../aws-exports';
 import Home from '../../components/unit-tracker/home';
 import { useQuery, useQueries } from '@tanstack/react-query';
 import { fetchAuthSession } from 'aws-amplify/auth';
-import * as api from '../../api/vsnandy-lambda-api';
+import * as api from '../../api/vsnandy-lambda-api/unit-bet';
 import Layout from '../../components/layout';
 
 import '../../styles/page.css';

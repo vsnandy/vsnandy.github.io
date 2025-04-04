@@ -7,7 +7,7 @@ import Form from 'react-bootstrap/Form';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import { FaCircleMinus } from 'react-icons/fa6';
 
-import * as api from '../../../api/vsnandy-lambda-api';
+import * as api from '../../../api/vsnandy-lambda-api/unit-bet';
 
 import './props-tile.css';
 

@@ -61,15 +61,10 @@ const Home = () => (
         <p>Hi, I'm <b>Varun</b>. Welcome to my site!</p>
         <p>
           I'm a Software Engineer, currently working at Capital One.
-          My current area of focus is Full Stack, specifically using <b>React</b> and <b>Node.js</b>.
+          My current area of focus is in Backend development, specifically in <b>Spring Boot</b>.
         </p>
         <p>
-          Outside of work, I enjoy playing soccer, running on the Chicago
-          lakefront trail, and trying out various pizza joints in the city.
-        </p>
-        <p>
-          I'll be using this site to showcase the projects I've been working on. 
-          I hope you like it!
+          I'll be using this site to showcase the projects I've been working on outside of work.
         </p>
       </Col>
     </Row>

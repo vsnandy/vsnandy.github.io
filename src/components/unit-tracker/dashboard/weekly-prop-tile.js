@@ -10,7 +10,7 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import { useQuery } from '@tanstack/react-query';
 import { FaCircleCheck, FaCircleXmark, FaCircleMinus } from "react-icons/fa6";
 
-import * as api from '../../../api/vsnandy-lambda-api';
+import * as api from '../../../api/vsnandy-lambda-api/unit-bet';
 
 import './weekly-prop-tile.css';
 

@@ -8,7 +8,7 @@ import BetSlip from './bet-slip';
 import PlayerProps from './player-props/player-props';
 import GameProps from './game-props/game-props';
 
-import * as api from '../../../api/vsnandy-lambda-api';
+import * as api from '../../../api/vsnandy-lambda-api/unit-bet';
 
 import './bet-widget.css';
 

@@ -11,7 +11,7 @@ import { GameWeekTile } from '../game-week-tile';
 import { PlayerPropsTile } from '../props-tile';
 
 import { getEvent } from '../../utils';
-import * as api from '../../../../api/vsnandy-lambda-api';
+import * as api from '../../../../api/vsnandy-lambda-api/unit-bet';
 
 import './player-modal.css';
 

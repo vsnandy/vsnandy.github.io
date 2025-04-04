@@ -1,0 +1,8 @@
+.active-player {
+    font-weight: bold;
+}
+
+.inactive-player {
+    font-weight: normal;
+    opacity: 60%;
+}

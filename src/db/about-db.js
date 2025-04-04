@@ -8,7 +8,8 @@ export const work = [
     start_date: "Jun 2017",
     end_date: "Aug 2017",
     location: "Richfield, MN",
-    icon: "best-buy-logo.png"
+    icon: "best-buy-logo.png",
+    isActive: false,
   },
   {
     id: 2,
@@ -17,7 +18,8 @@ export const work = [
     start_date: "Aug 2017",
     end_date: "May 2018",
     location: "Minneapolis, MN",
-    icon: "umn-logo.png"
+    icon: "umn-logo.png",
+    isActive: false,
   },
   {
     id: 3,
@@ -26,7 +28,8 @@ export const work = [
     start_date: "May 2018",
     end_date: "Aug 2018",
     location: "Eden Prairie, MN",
-    icon: "ch-robinson-logo.png"
+    icon: "ch-robinson-logo.png",
+    isActive: false,
   },
   {
     id: 4,
