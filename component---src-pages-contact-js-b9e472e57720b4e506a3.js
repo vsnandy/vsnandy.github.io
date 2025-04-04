@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkvsnandy_github_io=self.webpackChunkvsnandy_github_io||[]).push([[209],{5351:function(e,t,a){a.r(t);var n=a(6540),c=a(623),s=a(8182);t.default=()=>n.createElement(s.A,null,n.createElement("main",{className:"page"},n.createElement(c.A,{title:"Contact",description:"Contact vsnandy"}),n.createElement("header",{className:"top-header"},"Reach Me"),n.createElement("div",{className:"medium-text"})))}}]);
+//# sourceMappingURL=component---src-pages-contact-js-b9e472e57720b4e506a3.js.map
