@@ -36,7 +36,7 @@ export const getAllSchools = async (token) => {
             };
         }
     } catch (err) {
-        console.log("Error in api layer!");
+        console.log("Error in api layer!", err);
         return {
             status: 503,
             message: {
@@ -55,7 +55,7 @@ export const getWapitPlayers = async (year, token) => {
     const headers = constructHeaders(token);
     const endpoint = `${baseUrl}/ncaa/wapit/players?year=${year}`;
 
-    //console.log(`[NCAA API / getWapitPlayers()] - Hitting endpoint: ${endpoint}`);
+    console.log(`[NCAA API / getWapitPlayers()] - Hitting endpoint: ${endpoint}`);
 
     try {
         const response = await fetch(endpoint, {
@@ -111,7 +111,7 @@ export const getWapitLeague = async (leagueName, year, userPoolId, token) => {
     console.log("USER POOL ID: " + userPoolId);
     const endpoint = `${baseUrl}/ncaa/wapit/league/${leagueName}/year/${year}?user_pool_id=${userPoolId}`;
 
-    //console.log(`[NCAA API] - Hitting endpoint: ${endpoint}`);
+    console.log(`[NCAA API] - Hitting endpoint: ${endpoint}`);
 
     try {
         const response = await fetch(endpoint, {
@@ -142,7 +142,7 @@ export const getWapitLeague = async (leagueName, year, userPoolId, token) => {
             };
         }
     } catch (err) {
-        console.log("Error in api layer!");
+        console.log("Error in api layer!", err);
         return {
             status: 503,
             message: {
@@ -192,7 +192,7 @@ export const postWapitDraft = async (leagueName, year, draftPicks, token) => {
             };
         }
     } catch (err) {
-        console.log("Error in api layer!");
+        console.log("Error in api layer!", err);
         return {
             status: 503,
             message: {
@@ -223,7 +223,7 @@ export const getAllWapitStats = async (year, token) => {
 
         if (response.status === 200) {
             const result = await response.json();
-            //console.log(result);
+            console.log(result);
             return {
                 status: response.status,
                 message: {},
@@ -241,7 +241,7 @@ export const getAllWapitStats = async (year, token) => {
             };
         }
     } catch (err) {
-        console.log("Error in api layer!");
+        console.log("Error in api layer!", err);
         return {
             status: 503,
             message: {

@@ -15,10 +15,15 @@ import SEO from '../../components/seo';
 import * as ncaa from '../../api/vsnandy-lambda-api/ncaa';
 import Draft from '../../components/wapit/draft';
 import Dashboard from '../../components/wapit/dashboard';
+import ListGroup from 'react-bootstrap/ListGroup';
+import ListGroupItem from 'react-bootstrap/ListGroupItem';
+
+import '../../styles/wapit.css';
 
 // Setup Amplify for Cognito
 Amplify.configure(awsExports);
 
+/*
 const formFields = {
     setupTotp: {
         QR: {
@@ -32,29 +37,68 @@ const formFields = {
         }
     }
 }
+*/
 
-const Home = ({ schools, league, userGroups, players, wapitStats, token }) => {
+const Home = ({ schools, userGroups, token }) => {
     //console.log("[Home] - Schools:", schools);
     //console.log("[Home] - Token:", token);
 
     const { user, signOut } = useAuthenticator((context) => [context.user]);
-    const [ userAttributes, setUserAttributes ] = useState({});
+    //const [ userAttributes, setUserAttributes ] = useState({});
+    const [ userLeagues, setUserLeagues ] = useState(userGroups.filter(group => group.startsWith("wapit_")));
+    const [ selectedLeague, setSelectedLeague ] = useState(null);
 
-    useEffect(() => {
-        const getAttributes = async () => {
-            const attributes = await fetchUserAttributes();
-            setUserAttributes(attributes);
-        };
+    console.log("User Groups: ", userGroups);
+    console.log("User Leagues: ", userLeagues);
 
-        getAttributes();
-    }, [user]);
+    const fetchLeague = async () => {
+        // Extract league name and year
+        const year = selectedLeague.slice(-4);
+        const name = selectedLeague.slice(0,-4);
+        console.log("Fetching league: " + name, year);
+        const response = await ncaa.getWapitLeague(name, year, awsExports["Auth"]["Cognito"]["userPoolId"], token);
+        return response.result;
+    }
+
+    const fetchPlayers = async () => {
+        console.log("Fetching players for " + league["year"]);
+        const response = await ncaa.getWapitPlayers(league['year'], token)
+        return response.result;
+    }
+
+    const fetchAllWapitStats = async () => {
+        console.log("Fetching Wapit stats for " + league["year"]);
+        const response = await ncaa.getAllWapitStats(league['year'], token);
+        return response.result;
+    }
+
+    const { data: league, isPending: leaguePending } = useQuery({
+        queryKey: ["league"],
+        queryFn: () => fetchLeague(),
+        gcTime: Infinity,
+        enabled: !!selectedLeague
+    });
+
+    const { data: players, isPending: playersPending } = useQuery({
+        queryKey: ["players"],
+        queryFn: () => fetchPlayers(),
+        gcTime: Infinity,
+        enabled: !!league
+    });
+
+    const { data: wapitStats, isPending: wapitPending } = useQuery({
+        queryKey: ["wapit"],
+        queryFn: () => fetchAllWapitStats(),
+        gcTime: Infinity,
+        enabled: !!league
+    });
 
     //console.log("[Home] - User Attributes:", userAttributes);
     //console.log("[Home] - User Groups:", userGroups);
     //console.log("[Home] - User:", user);
-    console.log("[Home] - League:", league);
-    console.log("[Home] - Players:", players);
-    console.log("[Home] - Wapit Stats:", wapitStats);
+    //console.log("[Home] - League:", league);
+    //console.log("[Home] - Players:", players);
+    //console.log("[Home] - Wapit Stats:", wapitStats);
 
     /*
     return (
@@ -65,21 +109,40 @@ const Home = ({ schools, league, userGroups, players, wapitStats, token }) => {
     );
     */
 
-    return (
-        <Container fluid>
-            { league["draft"].length === 0 ?
-                <Draft league={league} players={players} schools={schools} token={token} /> : <Dashboard league={league} players={players} schools={schools} wapitStats={wapitStats} token={token} />
-            }
-            {/*
-            <ListGroup>
-                { user && players.players.map((player, idx) => 
-                    <ListGroup.Item key={idx}>
-                        {player["firstName"]} {player["lastName"]} - {player["school"]} - {player.seasonAverage?.points ?? "0.0"} PPG
-                    </ListGroup.Item>
-                )}
-            </ListGroup>*/}
-        </Container>
-    );
+    if (userGroups.length == 0) {
+        return (
+            <Container fluid>
+                <p>Looks like you aren't part of any WAPIT leagues. Check with your league manager to be added.</p>
+            </Container>
+        );
+    }
+
+    if (league == null) {
+        return (
+            <Container fluid>
+                <h2>Select a League:</h2>
+                <ListGroup>
+                    {userGroups.filter(group => group.startsWith("wapit_")).map((g, index) => {
+                        return (
+                            <ListGroupItem key={index} action onClick={() => setSelectedLeague(g.slice("wapit_".length))}>
+                                {g.slice("wapit_".length, -4)} {g.slice(-4)}
+                            </ListGroupItem>
+                        );
+                    })}
+                </ListGroup>
+            </Container>
+        );
+    } else {
+        return (
+            <Container fluid>
+                { leaguePending || playersPending || wapitPending 
+                    ? <Spinner as="span" animation="border" size="lg" role="status" aria-hidden="true" />
+                    : league["draft"].length === 0 ?
+                    <Draft league={league} players={players} schools={schools} token={token} /> : <Dashboard league={league} players={players} schools={schools} wapitStats={wapitStats} token={token} />
+                }
+            </Container>
+        );
+    }
 }
 
 const App = () => {
@@ -93,10 +156,14 @@ const App = () => {
         const response = (await fetchAuthSession({ forceRefresh: true })).tokens;
         //console.log("[fetchToken] - Session:", response);
         console.log("[fetchToken] - Token:", response.accessToken.toString());
-        //console.log("[fetchToken] - Cognito Groups:", response.accessToken.payload["cognito:groups"]);
-        setUserGroups(response.accessToken.payload["cognito:groups"]);
+        console.log("[fetchToken] - Cognito Groups:", response.accessToken.payload["cognito:groups"]);
+        if (response.accessToken.payload["cognito:groups"]) {
+            setUserGroups(response.accessToken.payload["cognito:groups"]);
+        }
         return response.accessToken.toString();
     };
+
+    console.log("[App] - userGroups: ", userGroups);
 
     const fetchSchools = async () => {
         if (authStatus === "authenticated") {
@@ -105,61 +172,6 @@ const App = () => {
             return response.result.schools;
         } else {
             console.log("[fetchSchools] - Not authenticated yet...");
-            return null;
-        }
-    }
-
-    const fetchLeague = async () => {
-        if (authStatus === 'authenticated') {
-            // Extract leagueName & year from User Groups
-            const leagues = userGroups.filter(group => group.startsWith("wapit_"))
-            var latest_league_name = null;
-            var latest_league_year = 0;
-
-            // Loop through leagues and extract latest year
-            leagues.forEach(league => {
-                //console.log("League:", league);
-                const year = league.slice(-4);
-                const isLater = Number(year) > latest_league_year ? true : false;
-                //console.log(`${latest_league_year} > ${year}? ${isLater}`);
-
-                if (isLater) {
-                    latest_league_year = year;
-                    latest_league_name = league.slice("wapit_".length, -4);
-                    //console.log("Updating latest league to " + latest_league_name);
-                }
-            });
-
-            //console.log("Latest League: " + latest_league_name + " in Year " + latest_league_year);
-            
-            if (latest_league_name === null || latest_league_year === 0) {
-                return null;
-            }
-
-            const response = await ncaa.getWapitLeague(latest_league_name, latest_league_year, awsExports["Auth"]["Cognito"]["userPoolId"], token);
-            return response.result;
-        } else {
-            console.log("[fetchLeague] - Not authenticated yet...")
-            return null;
-        }
-    }
-
-    const fetchPlayers = async () => {
-        if (authStatus === 'authenticated') {
-            const response = await ncaa.getWapitPlayers(league['year'], token)
-            return response.result;
-        } else {
-            console.log("[fetchPlayers] - Not authenticated yet...");
-            return null;
-        }
-    }
-
-    const fetchAllWapitStats = async () => {
-        if (authStatus === 'authenticated') {
-            const response = await ncaa.getAllWapitStats(league['year'], token);
-            return response.result;
-        } else {
-            console.log("[fetchAllWapitStats] - Not authenticated yet...");
             return null;
         }
     }
@@ -176,36 +188,15 @@ const App = () => {
         enabled: authStatus === "authenticated" && !!token
     });
 
-    const { data: league, isPending: pendingLeague } = useQuery({
-        queryKey: ["league"],
-        queryFn: () => fetchLeague(),
-        gcTime: Infinity,
-        enabled: authStatus === 'authenticated' && !!token
-    });
-
-    const { data: players, isPending: playersPending } = useQuery({
-        queryKey: ["players"],
-        queryFn: () => fetchPlayers(),
-        gcTime: Infinity,
-        enabled: authStatus === 'authenticated' && !!token && !!league
-    });
-
-    const { data: wapitStats, isPending: wapitPending } = useQuery({
-        queryKey: ["wapit"],
-        queryFn: () => fetchAllWapitStats(),
-        gcTime: Infinity,
-        enabled: authStatus === 'authenticated' && !!token && !!league
-    });
-
     return (
         <Layout>
             <SEO title="WAPIT" />
             { authStatus === 'configuring' && 'Loading...'}
             { authStatus !== 'authenticated' ?
-                <Authenticator loginMechanisms={['email']} hideSignUp formFields={formFields} className="mt-5" />
-                : isPendingSchools || pendingLeague || playersPending || wapitPending
+                <Authenticator loginMechanisms={['username']} signUpAttributes={['name', 'email', 'nickname', 'phone_number']} className="mt-5" />
+                : isPendingSchools
                     ? <Spinner as="span" animation="border" size="lg" role="status" aria-hidden="true" />
-                    : <Home schools={schools} userGroups={userGroups} league={league} players={players} wapitStats={wapitStats} token={token} />
+                    : <Home schools={schools} userGroups={userGroups} token={token} />
             }
         </Layout>
     );
