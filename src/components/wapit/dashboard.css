@@ -1,8 +1,9 @@
-.active-player {
-    font-weight: bold;
+.active-player td {
+    font-weight: 500;
+    background-color: blanchedalmond;
 }
 
-.inactive-player {
+.inactive-player td {
     font-weight: normal;
-    opacity: 60%;
+    opacity: 50%;
 }

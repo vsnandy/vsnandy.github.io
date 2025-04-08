@@ -1,11 +1,15 @@
-import React, { useState, useEffect, useReducer } from 'react';
+import React, { useState, useEffect } from 'react';
 import Container from 'react-bootstrap/Container';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
+import Image from 'react-bootstrap/Image';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, Rectangle, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 import './dashboard.css';
+
+const SCHOOL_URI_LIGHT = "https://i.turner.ncaa.com/sites/default/files/images/logos/schools/bgl/";
+const SCHOOL_URI_DARK = "https://i.turner.ncaa.com/sites/default/files/images/logos/schools/bgd/";
 
 const lineColors = [
     "#1f77b4", // blue
@@ -84,7 +88,7 @@ const Leaderboard = ({ league, players, schools, wapitStats, token }) => {
         }
 
         setRankings(calculateStats(league.teams));
-    }, []);
+    }, [league.draft.length, league.teams, wapitStats.stats]);
 
     return (
         rankings.length === 0
@@ -126,6 +130,13 @@ const WowBreakdown = ({ league, wapitStats }) => {
     // [{ name: Round of 64, team1: 10, team2: 12, ...}, ...]
     //const [pointsByRound, setPointsByRound] = useState([]);
     const [pointsByTeam, setPointsByTeam] = useState([]);
+    const [sortKey, setSortKey] = useState("Total");
+
+    //console.log("Sort Key: " + sortKey);
+
+    const sortedPointsByTeam = [...pointsByTeam].sort((a, b) => {
+        return b["aggregatedTotals"].find(total => total.name === sortKey)["value"] - a["aggregatedTotals"].find(total => total.name === sortKey)["value"];
+    })
 
     useEffect(() => {
         const calculateTeamStats = (teams) => {
@@ -134,23 +145,21 @@ const WowBreakdown = ({ league, wapitStats }) => {
 
             Object.entries(teams).forEach(([teamId, teamPlayers]) => {
                 // teamStats will be like -> {name: 'TEAM_1', 'First Round': 120, 'Second Round': 83, 'Sweet 16': 52, ...}
-                const teamStats = {};
-                let totalTeamPoints = 0; // Keep track of total team points for sorting later
+                const teamStats = { aggregatedTotals: [] };
                 teamPlayers.forEach((player, index) => {
                     // Using wapitStats, lookup player stats to add to week total
                     const stats = wapitStats.stats[player["PlayerID"]];
+
                     stats.boxscores.forEach(score => {
                         if (score["roundName"] in teamStats) {
                             teamStats[score["roundName"]] += Number(score["pts"]);
-                            totalTeamPoints += Number(score["pts"]);
                         } else {
                             teamStats[score["roundName"]] = Number(score["pts"]);
-                            totalTeamPoints += Number(score["pts"]);
                         }
                     });
                 });
 
-                teamsList.push({name: teamId, "currentPoints": totalTeamPoints, ...teamStats});
+                teamsList.push({name: teamId,...teamStats});
             });
 
             // Fill any teams with missing round due to no players alive
@@ -160,19 +169,38 @@ const WowBreakdown = ({ league, wapitStats }) => {
                 : maxObj;
             });
 
+            // 1. Fill in any missing rounds for each team
+            // 2. Create the aggregatedTotals list of round aggregates
             teamsList = teamsList.map((team, index) => {
                 const filledTeam = team;
+                let curRoundPoints = 0;
                 Object.keys(maxRoundTeam).forEach((key, index) => {
+                    // Fill in missing rounds
                     if (!(key in filledTeam)) {
                         filledTeam[key] = 0;
                     }
+
+                    if (key !== "name" && key !== "aggregatedTotals") {
+                        curRoundPoints += filledTeam[key];
+                        // Calculate round aggregates
+                        filledTeam["aggregatedTotals"].push({
+                            name: key,
+                            value: curRoundPoints,
+                        });
+                    }
+                });
+
+                // Add Total record in aggregatedTotals
+                filledTeam["aggregatedTotals"].push({
+                    name: "Total",
+                    value: curRoundPoints,
                 });
 
                 return filledTeam;
             });
             
             // Sort the teamsList by latest round rankings
-            teamsList.sort((a, b) => b["currentPoints"] - a["currentPoints"])
+            teamsList.sort((a, b) => b["aggregatedTotals"].find(total => total.name === "Total")["value"] - a["aggregatedTotals"].find(total => total.name === "Total")["value"]);
 
             console.log("Teams List: ", teamsList);
 
@@ -181,18 +209,66 @@ const WowBreakdown = ({ league, wapitStats }) => {
 
         //setPointsByRound(calculateRoundStats(league.teams));
         setPointsByTeam(calculateTeamStats(league.teams));
-    }, []);
+    }, [league.teams, wapitStats.stats]);
 
+
+    const CustomLegend = ({ payload, sortKey, onClick }) => {
+        //console.log("Payload:", payload);
+        return (
+            <ul 
+                style={{ 
+                    listStyle: "none", 
+                    display: "flex", 
+                    flexDirection: 'column',
+                    padding: 0,
+                    alignItems: "flex-start",
+                }}
+            >
+            {payload.map((entry, index) => (
+                <li
+                    key={`item-${index}`}
+                    style={{
+                        marginRight: 20,
+                        cursor: "pointer",
+                        fontWeight: sortKey === entry.value ? "bold" : "normal",
+                        color: entry.color,
+                        background: sortKey === entry.value ? "blanchedalmond" : "transparent",
+                        padding: "4px 8px",
+                        borderRadius: "4px"
+                    }}
+                    onClick={() => onClick(entry.value)}
+                >
+                {entry.value}
+                </li>
+            ))}
+            </ul>
+        );
+    };
+
+    const calculateLegendAttributes = () => {
+        //console.log("Calculating Legend Attributes...");
+        const attributes = [];
+        Object.keys(pointsByTeam[0]).forEach((key, index) => {
+            if (key !== "name" && key !== "aggregatedTotals") {
+                attributes.push({
+                    value: key,
+                    color: lineColors[index]
+                });
+            }
+        });
+
+        return attributes;
+    }
 
 
     const WowBarChart = () => (
-        <div style={{ width: "100%", height: 700}}>
-            <ResponsiveContainer>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: 'space-between', width: "100%", height: 700}}>
+            <ResponsiveContainer width="80%">
                 <BarChart
-                    data={pointsByTeam}
+                    data={sortedPointsByTeam}
                     margin={{
                         top: 5,
-                        right: 30,
+                        right: 0,
                         left: 20,
                         bottom: 5,
                     }}
@@ -203,16 +279,24 @@ const WowBreakdown = ({ league, wapitStats }) => {
                     <XAxis type="number" />
                     <YAxis dataKey="name" type="category" minTickGap={25}/>
                     <Tooltip />
-                    <Legend />
                     { Object.keys(pointsByTeam[0]).map((key, index) => {
-                        if (key !== "name" && key !== "currentPoints") {
-                            return <Bar key={index} dataKey={key} stackId="a" fill={lineColors[index]} activeBar={<Rectangle stroke="black" strokeWidth={3} />} />;
+                        if (key !== "name" && key !== "aggregatedTotals") {
+                            return <Bar key={index} dataKey={key} stackId="a" fill={lineColors[index]} activeBar={<Rectangle stroke="black" strokeWidth={3} background="blanchedalmond" />} />;
                         } else {
                             return null;
                         }
                     })}
                 </BarChart>
             </ResponsiveContainer>
+
+            {/* Custom Legend to the Right */}
+            <div style={{ marginLeft: 20 }}>
+                <CustomLegend 
+                    payload={calculateLegendAttributes()}
+                    sortKey={sortKey} 
+                    onClick={(val) => setSortKey(val)} 
+                />
+            </div>
         </div>
     );
 
@@ -229,6 +313,49 @@ const WowBreakdown = ({ league, wapitStats }) => {
 
 }
 
+const Jersey = ({ color, number, name, ratio }) => {
+    const scaledWidth = 512 * Number(ratio);
+    const scaledHeight = 512 * Number(ratio);
+    const path = "M183.3 27.47l-13.9 3.47c1.3 46.77 4.4 95.66 2.5 138.36-2 45.3-8.9 84.5-32.9 106.7v211h234V276c-24-22.2-30.9-61.4-32.9-106.7-1.9-42.7 1.2-91.59 2.5-138.36l-13.9-3.47c-1.1 22.08-5.3 46.02-14.5 66.25C303.4 117.5 284 137 256 137c-28 0-47.4-19.5-58.2-43.28-9.2-20.23-13.4-44.17-14.5-66.25zm18.2 3.33c1.4 19.18 5.4 39.48 12.7 55.48C223.4 106.5 236 119 256 119c20 0 32.6-12.5 41.8-32.72 7.3-16 11.3-36.3 12.7-55.48C286.9 42.47 272 49 256 49s-30.9-6.53-54.5-18.2zm-50 4.59l-14.4 3.6c.4 37.62 3.8 78.91 1.9 117.41-2 39.5-9.8 76.6-34 102.9V487h16V267.7l3.4-2.7c18.8-15.2 27.5-50.8 29.5-96.5 1.8-40.1-1-87.14-2.4-133.11zm209 0c-1.4 45.97-4.2 93.01-2.4 133.11 2 45.7 10.7 81.3 29.5 96.5l3.4 2.7V487h16V259.3c-24.2-26.3-32-63.4-34-102.9-1.9-38.5 1.5-79.79 1.9-117.41z";//M295.4 224c9.4 0 16.8 2.8 22.3 8.4 5.5 5.6 8.2 13.1 8.2 22.4 0 6.2-1.5 12.2-4.4 18-2.9 5.8-7.4 11.7-13.3 17.7-8.3 8.5-14 14.5-16.9 18.2-2.9 3.7-5 7.4-6.3 11.3h42.4v19.5h-63.9v-16.4c2.1-6.2 5.2-12.4 9.2-18.6 4-6.3 9.8-13.4 17.5-21.5 5.9-6.3 9.8-10.7 11.6-13.2 1.8-2.4 3.2-4.7 4.2-7s1.5-4.6 1.5-6.9c0-4.1-1-7.2-3-9.5-2.1-2.3-5.1-3.5-9-3.5-3.9 0-6.8 1.4-8.9 4.1-2.1 2.7-3.4 6.7-4 12.2l-18.3-1.3c1-11.1 4.2-19.5 9.5-25.2 5.3-5.8 12.5-8.7 21.6-8.7zm-76.3 1.8h20.4v71.9h12.2v17.6h-12.2v24.2h-17.3v-24.2h-41.6v-17.8zm3.6 20.6c-1.1 3.1-3.1 7.6-6.1 13.6l-20.7 37.7h26.3V263c0-3 0-6.3.1-9.8.2-3.5.3-5.8.4-6.8z";
+    return (
+        <svg width={scaledWidth} height={scaledHeight} viewBox={`0 0 ${scaledWidth} ${scaledHeight}`}>
+            <g transform={`scale(${ratio}) translate(25, 20)`}>
+                {/* Jersey Shape */}
+                <path 
+                    d={path}
+                    fill={color}
+                >
+                </path>
+                
+                {/* Number */}
+                <text
+                    x="256"
+                    y="310"
+                    fontSize="120"
+                    fontWeight="bold"
+                    fill="white"
+                    textAnchor="middle"
+                >
+                    {number}
+                </text>
+
+                {/* Name */}
+                <text
+                    x="256"
+                    y="200"
+                    fontSize="20"
+                    fontWeight="bold"
+                    fill="white"
+                    textAnchor="middle"
+                    letterSpacing="2"
+                >
+                    {name.toUpperCase()}
+                </text>
+            </g>
+        </svg>
+    );
+}
+
 const TopScorers = ({ league, players, schools, wapitStats, token }) => {
     // Structure:
     // Rank | Player | Points | School | Games Played (PPG) | Team
@@ -238,7 +365,14 @@ const TopScorers = ({ league, players, schools, wapitStats, token }) => {
         const fetchTopScorers = () => {
             const playersList = [];
 
-            Object.entries(wapitStats.stats).map(([playerId, player]) => {
+            Object.entries(wapitStats.stats).forEach(([playerId, player]) => {
+                //console.log("Player: " + player["firstName"] + " " + player["lastName"]);
+                //console.log(player);
+
+                if ((player["firstName"] + " " + player["lastName"]) === "Kerr Kriisa") {
+                    console.log(player);
+                }
+
                 const playerData = {
                     leagueTeam: "Undrafted",
                     pointsScored: 0,
@@ -272,6 +406,10 @@ const TopScorers = ({ league, players, schools, wapitStats, token }) => {
                     lastName: player["lastName"],
                     schoolNameShort: player["schoolNameShort"],
                     schoolNickname: player["schoolNickname"],
+                    schoolSeoName: player["schoolSeoName"],
+                    schoolColor: player["schoolColor"],
+                    schoolSeed: player["seed"],
+                    jerseyNumber: player["jerseyNumber"],
                     ...playerData,
                 });
             });
@@ -283,41 +421,49 @@ const TopScorers = ({ league, players, schools, wapitStats, token }) => {
         }
 
         setTopScorers(fetchTopScorers());
-    }, [])
+    }, [league.teams, wapitStats.stats])
 
     return (
         topScorers.length === 0
             ?  <Spinner as="span" animation="border" size="lg" role="status" aria-hidden="true" />
             : (
-                <Container className="d-flex flex-column align-items-center">
+                <Container className="d-flex flex-column align-items-center mb-3">
                     <h2>Top Scorers</h2>
-                    <Table striped bordered variant="light" className="mt-3">
-                        <thead>
-                            <tr>
-                                <th>Rank</th>
-                                <th>Player</th>
-                                <th>School</th>
-                                <th>Points</th>
-                                <th>Games Played (PPG)</th>
-                                <th>Team</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {topScorers.slice(0,25).map((player, index) => (
-                                <tr 
-                                    key={index}
-                                    className={player.isAlive ? "active-player" : "inactive-player"}
-                                >
-                                    <td>{index + 1}</td>
-                                    <td>{player["firstName"] + " " + player["lastName"]}</td>
-                                    <td>{player["schoolNameShort"] + " " + player["schoolNickname"]}</td>
-                                    <td>{player["pointsScored"]}</td>
-                                    <td>{player["gamesPlayed"]} ({(player["pointsScored"] / player["gamesPlayed"]).toFixed(1)})</td>
-                                    <td>{player["leagueTeam"]}</td>
+                    <div style={{ width: '100%', maxHeight: '500px', overflowY: 'auto' }}>
+                        <Table bordered variant="light" className="mt-3">
+                            <thead style={{ position: "sticky", top: "0", zIndex: 2 }}>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Player</th>
+                                    <th>School</th>
+                                    <th>Points</th>
+                                    <th>Games Played (PPG)</th>
+                                    <th>Team</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </Table>
+                            </thead>
+                            <tbody>
+                                {topScorers.map((player, index) => (
+                                    <tr 
+                                        key={index}
+                                        className={player.isAlive ? "active-player align-middle" : "inactive-player align-middle"}
+                                    >
+                                        <td>{index + 1}</td>
+                                        <td>
+                                            <Jersey color={player["schoolColor"]} number={player["jerseyNumber"]} name={player["lastName"]} ratio="0.1" />
+                                            {player["firstName"] + " " + player["lastName"]}
+                                        </td>
+                                        <td>
+                                            <Image src={SCHOOL_URI_LIGHT + player["schoolSeoName"] +".svg"} width="50px;" rounded fluid />
+                                            {player["schoolNameShort"] + " " + player["schoolNickname"]}
+                                        </td>
+                                        <td>{player["pointsScored"]}</td>
+                                        <td>{player["gamesPlayed"]} ({(player["pointsScored"] / player["gamesPlayed"]).toFixed(1)})</td>
+                                        <td>{player["leagueTeam"]}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </Table>
+                    </div>
                 </Container>
             )
     );
@@ -327,11 +473,24 @@ const HorizontalBorder = () => (
     <div className="my-4" style={{ borderBottom: '2px solid black', width: '100%' }}></div>
 );
 
+const toPascalCase = (phrase) => {
+    return phrase.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
+};
+
 
 const Dashboard = ({ league, players, schools, wapitStats, token }) => (
     <Container className="mt-3 d-flex flex-column align-items-center">
-        <h1>WAPIT Challenge - {league.leagueName} {league.year}</h1>
-        <p>(Updated as of {(new Date()).toLocaleDateString("en-US")})</p>
+        <h1>WAPIT Challenge - {toPascalCase(league.leagueName)} {league.year}</h1>
+        <p>(Updated as of {(new Date()).toLocaleString("en-US", {
+            weekday: "long",
+            year: "numeric",
+            month: "numeric",
+            day: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+            second: "numeric",
+            hour12: true,
+        })})</p>
         <HorizontalBorder />
         {/* Leaderboard */ }
         <Leaderboard league={league} players={players} schools={schools} wapitStats={wapitStats} token={token} />

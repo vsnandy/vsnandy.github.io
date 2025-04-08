@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Authenticator, useAuthenticator } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 import { Amplify } from 'aws-amplify';
@@ -10,7 +10,7 @@ import { useQuery } from '@tanstack/react-query';
 import Container from 'react-bootstrap/Container';
 
 import Layout from '../../components/layout';
-import SEO from '../../components/seo';
+import Seo from '../../components/seo';
 
 import * as ncaa from '../../api/vsnandy-lambda-api/ncaa';
 import Draft from '../../components/wapit/draft';
@@ -94,8 +94,8 @@ const Home = ({ schools, userGroups, token }) => {
     });
 
     //console.log("[Home] - User Attributes:", userAttributes);
-    //console.log("[Home] - User Groups:", userGroups);
-    //console.log("[Home] - User:", user);
+    console.log("[Home] - User Groups:", userGroups);
+    console.log("[Home] - User:", user);
     //console.log("[Home] - League:", league);
     //console.log("[Home] - Players:", players);
     //console.log("[Home] - Wapit Stats:", wapitStats);
@@ -109,7 +109,7 @@ const Home = ({ schools, userGroups, token }) => {
     );
     */
 
-    if (userGroups.length == 0) {
+    if (userGroups.length === 0) {
         return (
             <Container fluid>
                 <p>Looks like you aren't part of any WAPIT leagues. Check with your league manager to be added.</p>
@@ -119,17 +119,20 @@ const Home = ({ schools, userGroups, token }) => {
 
     if (league == null) {
         return (
-            <Container fluid>
-                <h2>Select a League:</h2>
-                <ListGroup>
-                    {userGroups.filter(group => group.startsWith("wapit_")).map((g, index) => {
-                        return (
-                            <ListGroupItem key={index} action onClick={() => setSelectedLeague(g.slice("wapit_".length))}>
-                                {g.slice("wapit_".length, -4)} {g.slice(-4)}
-                            </ListGroupItem>
-                        );
-                    })}
-                </ListGroup>
+            <Container className="my-4 d-flex flex-column align-items-center" style={{ width: '75%' }} fluid>
+                <h1>Hi, {user.username}!</h1>
+                <div className="my-3 d-flex flex-column select-league-div w-50">
+                    <h4>Select a League:</h4>
+                    <ListGroup>
+                        {userGroups.filter(group => group.startsWith("wapit_")).map((g, index) => {
+                            return (
+                                <ListGroupItem key={index} action onClick={() => setSelectedLeague(g.slice("wapit_".length))}>
+                                    {toPascalCase(g.slice("wapit_".length, -4))} {g.slice(-4)}
+                                </ListGroupItem>
+                            );
+                        })}
+                    </ListGroup>
+                </div>
             </Container>
         );
     } else {
@@ -190,7 +193,7 @@ const App = () => {
 
     return (
         <Layout>
-            <SEO title="WAPIT" />
+            <Seo title="WAPIT" />
             { authStatus === 'configuring' && 'Loading...'}
             { authStatus !== 'authenticated' ?
                 <Authenticator loginMechanisms={['username']} signUpAttributes={['name', 'email', 'nickname', 'phone_number']} className="mt-5" />
@@ -201,6 +204,10 @@ const App = () => {
         </Layout>
     );
 }
+
+const toPascalCase = (phrase) => {
+    return phrase.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
+};
 
 const Default = () => (
     <Authenticator.Provider>
