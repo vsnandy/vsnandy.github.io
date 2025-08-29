@@ -80,5 +80,14 @@ export const projects = [
     icon: <GiAirplaneDeparture size={svg_size} color={svg_color} className={svg_class} />,
     link: "/projects/trip-tracker",
     active: false
+  },
+  {
+    id: 9,
+    category: "Sports",
+    title: "NBA Stats",
+    description: "Explore NBA Statistics.",
+    icon: <GiBasketballJersey size={svg_size} color={svg_color} className={svg_class} />,
+    link: "/projects/nba-stats",
+    active: true
   }
 ];

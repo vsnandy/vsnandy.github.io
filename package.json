@@ -5,6 +5,7 @@
   "version": "0.1.0",
   "author": "Varun Nandyal",
   "dependencies": {
+    "@apollo/client": "^3.13.8",
     "@aws-amplify/ui-react": "^6.5.2",
     "@aws-crypto/sha256-js": "^5.2.0",
     "@emotion/react": "^11.13.3",
@@ -33,6 +34,7 @@
     "gatsby-source-filesystem": "^5.0.0",
     "gatsby-transformer-sharp": "^5.0.0",
     "google-map-react": "^2.1.9",
+    "graphql": "^16.11.0",
     "prop-types": "^15.7.2",
     "qrcode.react": "^4.0.1",
     "react": "^18.0.0",

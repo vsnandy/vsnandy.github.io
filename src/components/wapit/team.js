@@ -7,8 +7,6 @@ import Image from 'react-bootstrap/Image';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, Rectangle, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Label, LabelList } from 'recharts';
 import { FaMoneyBill, FaBeer, FaRunning, FaPoop, FaRegSmile } from 'react-icons/fa';
 
-import Team from './team';
-
 import './dashboard.css';
 
 const SCHOOL_URI_LIGHT = "https://i.turner.ncaa.com/sites/default/files/images/logos/schools/bgl/";
@@ -59,7 +57,7 @@ const lineColors = [
   ];
 
 
-const Leaderboard = ({ league, wapitStats, setParentRankings, setCurrentTeam, setPage }) => {
+const Leaderboard = ({ league, players, schools, wapitStats, token }) => {
     // Leaderboard Table Structure:
     // Rank | Team | Points | Players Alive | Games Played (PPG)
     const [rankings, setRankings] = useState([]);
@@ -90,10 +88,7 @@ const Leaderboard = ({ league, wapitStats, setParentRankings, setCurrentTeam, se
             return(teamsList);
         }
 
-        const stats = calculateStats(league.teams);
-
-        setRankings(stats);
-        setParentRankings(stats);
+        setRankings(calculateStats(league.teams));
     }, [league.draft.length, league.teams, wapitStats.stats]);
 
     const calculateMedian = (points) => {
@@ -158,16 +153,7 @@ const Leaderboard = ({ league, wapitStats, setParentRankings, setCurrentTeam, se
                                         <td>{team["Points"]}</td>
                                         <td>{team["PlayersAlive"]}</td>
                                         <td>{team["GamesPlayed"]} ({(team["Points"] / team["GamesPlayed"]).toFixed(1)})</td>
-                                        <td>
-                                            <Button 
-                                                onClick={() => {
-                                                    setCurrentTeam(team);
-                                                    setPage("team");
-                                                }}
-                                            >
-                                                Click for Details
-                                            </Button>
-                                        </td>
+                                        <td><Button onClick={() => console.log(team["TeamID"] + " clicked!!!")}>Click for Details</Button></td>
                                     </tr>
                                 )
                             })}
@@ -419,7 +405,7 @@ const Jersey = ({ color, number, name, ratio }) => {
     );
 }
 
-const TopScorers = ({ league, players, wapitStats, token }) => {
+const TopScorers = ({ league, players, schools, wapitStats, token }) => {
     // Structure:
     // Rank | Player | Points | School | Games Played (PPG) | Team
     const [topScorers, setTopScorers] = useState([]);
@@ -504,11 +490,11 @@ const TopScorers = ({ league, players, wapitStats, token }) => {
                                         className={player.isAlive ? "active-player align-middle" : "inactive-player align-middle"}
                                     >
                                         <td>{index + 1}</td>
-                                        <td className="data-left">
+                                        <td>
                                             <Jersey color={player["schoolColor"]} number={player["jerseyNumber"]} name={player["lastName"]} ratio="0.1" />
                                             {player["firstName"] + " " + player["lastName"]}
                                         </td>
-                                        <td className="data-left">
+                                        <td>
                                             <Image className="mx-2" src={SCHOOL_URI_LIGHT + player["schoolSeoName"] +".svg"} width="50px;" rounded fluid />
                                             {player["schoolNameShort"] + " " + player["schoolNickname"]}
                                         </td>
@@ -534,51 +520,17 @@ const toPascalCase = (phrase) => {
 };
 
 
-const Dashboard = ({ league, players, wapitStats, token }) => {
-    const [rankings, setRankings] = useState([]);
-    const [topScorers, setTopScorers] = useState([]);
-    const [page, setPage] = useState("dashboard");
-    const [currentTeam, setCurrentTeam] = useState("");
+const Team = ({ league, players, wapitStats, rankings, topScorers, currentTeam, setPage, token }) => {
+    const [selectedTeam, setSelectedTeam] = useState(currentTeam);
 
     return (
         <Container className="mt-3 d-flex flex-column align-items-center">
-            <div className="d-flex flex-column justify-content-between align-items-center w-100 wapit-header">
-                <h1>WAPIT Challenge - {toPascalCase(league.leagueName)} {league.year}</h1>
-                <p>(Updated as of {(new Date()).toLocaleString("en-US", {
-                    weekday: "long",
-                    year: "numeric",
-                    month: "numeric",
-                    day: "numeric",
-                    hour: "numeric",
-                    minute: "numeric",
-                    second: "numeric",
-                    hour12: true,
-                    })})
-                </p>
-            </div>
-            {page === "dashboard" && (
-                <div>
-                    {/* Leaderboard */ }
-                    <Leaderboard league={league} wapitStats={wapitStats} setParentRankings={setRankings} setCurrentTeam={setCurrentTeam} setPage={setPage} />
-                    <HorizontalBorder />
-                    {/* Week over Week Breakdown */}
-                    <WowBreakdown league={league} wapitStats={wapitStats} />
-                    <HorizontalBorder />
-                    {/* Top Scorers */}
-                    <TopScorers league={league} players={players} wapitStats={wapitStats} token={token} />
-                </div>
-            )}
-            {page === "team" && (
-                <div>
-                    {/* Team View */}
-                    <Team league={league} players={players} wapitStats={wapitStats} rankings={rankings} topScorers={topScorers} currentTeam={currentTeam} token={token} />
-                </div>
-            )}
+            <h2>{selectedTeam["TeamID"]} - {selectedTeam["Points"]}</h2>
         </Container>
     );
 }
 
-export default Dashboard;
+export default Team;
 
 
 

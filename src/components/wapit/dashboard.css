@@ -5,5 +5,16 @@
 
 .inactive-player td {
     font-weight: normal;
-    opacity: 50%;
+    /*opacity: 50%;*/
+}
+
+.data-left {
+    text-align: left;
+}
+.wapit-header {
+    border-bottom: 2px solid black;
+    padding: 25px;
+    color: black;
+    margin-top: 10px;
+    margin-bottom: 25px;
 }
