@@ -5,8 +5,8 @@ import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 
 const MyNavbar = ({ switchPage, userAttributes, signOut }) => (
-    <Navbar expand="lg" bg="dark" data-bs-theme="dark" className="px-3">
-        <Container>
+    <Navbar expand="lg" bg="dark" data-bs-theme="dark">
+        <Container fluid>
             <Navbar.Brand>Unit Tracker</Navbar.Brand>
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
             <Navbar.Collapse id="responsive-navbar-nav">

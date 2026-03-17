@@ -18,7 +18,7 @@ const Home = ({ players, teams, events, bets, userGroups, token }) => {
     useEffect(() => {
         const getAttributes = async () => {
             const attributes = await fetchUserAttributes();
-            setUserAttributes(attributes);
+            setUserAttributes({"username": user.username, ...attributes});
         }
 
         getAttributes();
@@ -31,17 +31,17 @@ const Home = ({ players, teams, events, bets, userGroups, token }) => {
 
     const renderPage = (page) => {
         switch(page) {
-            case 'dashboard': return <Dashboard bets={bets} players={players} events={events} teams={teams} token={token} />;
+            case 'dashboard': return <Dashboard bets={bets} players={players} events={events} teams={teams} userAttributes={userAttributes} token={token} />;
             case 'bet-slip': return <Widget players={players} events={events} teams={teams} slip={slip} setSlip={setSlip} userAttributes={userAttributes} token={token} />;
             default: return <h1>TBD</h1>
         }
     }
 
     return (
-        <Container>
+        <Container fluid>
             <SEO title="Unit Tracker" description="Unit Tracker Project" />
             { user &&
-                <Container>
+                <Container fluid>
                     <Navbar switchPage={switchPage} userAttributes={userAttributes} signOut={signOut} />
                     { renderPage(page) }
                 </Container>

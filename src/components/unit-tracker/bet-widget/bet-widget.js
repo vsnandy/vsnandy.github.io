@@ -21,7 +21,7 @@ const Widget = ({ players, events, teams, slip, setSlip, userAttributes, token }
         console.debug("Clearing " + slip.length + " existing bets from slip...");
         setSlip([]);
         console.debug("Fetching events for week:", newWeek)
-        const response = await api.getEvents("football", "nfl", newWeek, token);
+        const response = await api.getSiteScoreboard("football", "nfl", newWeek, token);
         setWeek(newWeek);
         setSelectedEvents(response.result);
     };
@@ -32,7 +32,7 @@ const Widget = ({ players, events, teams, slip, setSlip, userAttributes, token }
 
     const WidgetBody = () => {
         switch(propType) {
-            case '#slip': return <BetSlip slip={slip} setSlip={setSlip} week={week} userAttributes={userAttributes} />
+            case '#slip': return <BetSlip slip={slip} setSlip={setSlip} year={events["season"]["year"]} week={week} userAttributes={userAttributes} token={token} />
             case '#player': return <PlayerProps players={players} events={selectedEvents} slip={slip} setSlip={setSlip} token={token} week={week} />
             case '#game': return <GameProps events={selectedEvents} slip={slip} setSlip={setSlip} token={token} week={week} />
             default: return (

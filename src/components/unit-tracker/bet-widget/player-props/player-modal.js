@@ -64,7 +64,7 @@ const PlayerModal = ({ events, selectedPlayer, show, handleClose, submitProps, m
 
     const fetchPlayerById = async (id) => {
         console.debug("[PLAYER MODAL] -- Fetching Player:", id);
-        const response = await api.getPlayerById("football", "nfl", id, token);
+        const response = await api.getAthlete("football", "nfl", id, token);
         //console.debug(response.result.athlete);
         return response.result.athlete;
     };

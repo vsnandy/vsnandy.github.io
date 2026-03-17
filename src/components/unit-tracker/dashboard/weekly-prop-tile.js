@@ -11,6 +11,7 @@ import { useQuery } from '@tanstack/react-query';
 import { FaCircleCheck, FaCircleXmark, FaCircleMinus } from "react-icons/fa6";
 
 import * as api from '../../../api/vsnandy-lambda-api';
+import * as utils from '../../unit-tracker/utils';
 
 import './weekly-prop-tile.css';
 
@@ -21,7 +22,7 @@ const footballPlayerStatConstants = api.footballPlayerStatConstants;
 const footballGameStatConstants = api.footballGameStatConstants;
 
 export const WeeklyPropTile = ({ bets, bettor, season, players, teams, week, token }) => {
-    //console.log("WEEKLY PROP BETS for " + bettor + " - " + season + "#" + week + ":", bets[bettor][season + "#" + week.toString()])
+    console.log("WEEKLY PROP BETS for " + bettor + " - " + season + "#" + week + ":", bets[bettor][season + "#" + week.toString()])
 
     const fetchEvents = async (week) => {
         const response = await api.getEvents("football", "nfl", week, token);
@@ -114,7 +115,10 @@ export const WeeklyPropTile = ({ bets, bettor, season, players, teams, week, tok
     }
 
     const GamePropTile = ({ bet, events }) => {
-        const event = events["events"].find(event => event["id"] === bet["PROP_ID"]);
+        const event = events["events"].find(event => event["id"] === bet["EVENT_ID"]);
+
+        console.debug("EVENT ID FOR GAME PROP:", bet["EVENT_ID"]);
+        console.log("EVENT FOR GAME PROP:", events);
 
         return (
             <ListGroup.Item>
@@ -167,13 +171,55 @@ export const WeeklyPropTile = ({ bets, bettor, season, players, teams, week, tok
 }
 
 
-export const SlipWeeklyPropTile = ({ slip, setSlip, userAttributes, week }) => {
+export const SlipWeeklyPropTile = ({ slip, setSlip, userAttributes, year, week, token }) => {
 
     const removeProp = (id) => {
         // Remove prop with the given id
         console.debug("Removing prop", id);
         const updatedSlip = slip.filter(prop => prop.id !== id);
         setSlip(updatedSlip);
+    }
+
+    const submitProps = (totalOdds) => {
+        //console.debug("User attributes:", userAttributes);
+        //console.debug(`Submitting props for week ${week} for ${userAttributes["nickname"]}:`, slip);
+        const username = utils.getUsername(userAttributes);
+        const propBody = slip.map(prop => ({
+            "PROP_TYPE": prop.prop["PROP_TYPE"],
+            "PROP_ID": prop.prop["PROP_ID"],
+            "BET": prop.prop["BET"],
+            "VALUE": prop.prop["VALUE"],
+            "ODDS": prop.prop["ODDS"],
+            "EVENT_ID": prop.event["id"],
+            "OUTCOME": "N"  // Default to "N" (not yet determined)
+        }));
+
+        // Add total odds as a separate prop if provided
+        if (totalOdds) {
+            propBody.push({
+                "ODDS": totalOdds,
+                "OUTCOME": "N",
+                "PROP_TYPE": "TOTAL",
+            });
+        }
+
+        console.debug("Username:", username);
+        console.debug("Week:", year + "#" + week);
+        console.debug("Submitting props:", propBody);
+
+        // Build the body
+        // Example: {"Bettor": "FLAST", "Week": 1, "Bets": [{"PROP_ID": "12345", "BET": "RUSH_YDS", "VALUE": "OVER 75.5", "ODDS": "-110"}, ...]}
+        const body = {
+            "Bettor": username,
+            "Name": userAttributes["name"].toUpperCase(),
+            "Week": (year + "#" + week).toString(),
+            "Bets": propBody
+        };
+        
+        console.debug("Submit body:", body);
+
+        const response = api.submitBetsForWeek(body, token);
+        console.debug("Submit response:", response);
     }
 
     const PlayerPropTile = ({ prop: { id, prop, player, event} }) => {
@@ -270,20 +316,29 @@ export const SlipWeeklyPropTile = ({ slip, setSlip, userAttributes, week }) => {
         );
     }
 
-    const TotalPropTile = () => (
-        <ListGroup.Item variant="secondary">
-            <Container>
-                <InputGroup size="lg">
-                    <InputGroup.Text id="prop-total">Total</InputGroup.Text>
-                    <Form.Control
-                        placeholder="-110"
-                        aria-label="prop-total"
-                        aria-describedby="prop-total"
-                    />
-                </InputGroup>
-            </Container>
-        </ListGroup.Item>  
-    );
+    const TotalPropTile = () => {
+        const [totalOdds, setTotalOdds] = React.useState("-110");
+
+        return (
+            <ListGroup.Item variant="secondary">
+                <Container>
+                    <InputGroup size="lg" >
+                        <InputGroup.Text id="prop-total">Total</InputGroup.Text>
+                        <Form.Control
+                            placeholder="-110"
+                            aria-label="prop-total"
+                            aria-describedby="prop-total"
+                            value={totalOdds}
+                            onChange={(e) => setTotalOdds(e.target.value)}
+                        />
+                    </InputGroup>
+                </Container>
+                <Container>
+                    <Button variant="outline-success" className="mt-2" onClick={() => submitProps(totalOdds)}>Submit</Button>
+                </Container>
+            </ListGroup.Item>  
+        );
+    };
 
     return (
         <Card.Body>

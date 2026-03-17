@@ -52,7 +52,7 @@ export const projects = [
     description: "Explore NBA data.",
     icon: <GiBasketballJersey size={svg_size} color={svg_color} className={svg_class} />,
     link: "/projects/nba-analytics",
-    active: false
+    active: true
   },
   {
     id: 6,
@@ -71,5 +71,14 @@ export const projects = [
     icon: <GiAirplaneDeparture size={svg_size} color={svg_color} className={svg_class} />,
     link: "/projects/trip-tracker",
     active: false
+  },
+    {
+    id: 8,
+    category: "Sports",
+    title: "NFL Analytics",
+    description: "Explore NFL Data",
+    icon: <GiAmericanFootballHelmet size={svg_size} color={svg_color} className={svg_class} />,
+    link: "/projects/nfl-analytics",
+    active: true
   }
 ];

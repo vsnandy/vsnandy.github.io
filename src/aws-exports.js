@@ -9,8 +9,8 @@ const awsExports = {
             }
         },
         mfa: {
-            status: 'on',
-            totpEnabled: true
+            status: 'off',
+            totpEnabled: false
         },
     }
 }

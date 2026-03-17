@@ -29,3 +29,7 @@ export const getEvent = (events, player) => {
         return [byeEvent, true];
     }
 }
+
+export const getUsername = (userAttributes) => {
+    return userAttributes["name"][0].toUpperCase() + userAttributes["name"].split(" ")[1].toUpperCase();
+}

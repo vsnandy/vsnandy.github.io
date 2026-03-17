@@ -23,6 +23,26 @@ code {
     monospace;
 }
 
+#layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1;
+}
+
+footer {
+  color: white;
+  margin-top: 2rem;
+  padding: 0.5rem;
+  text-align: center;
+  background: maroon;
+  font-size: 16px;
+  margin-bottom: 0;
+}
+
 /*
 @media(max-width: 768px) {
   .app-container {

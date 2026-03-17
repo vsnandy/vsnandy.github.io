@@ -15,6 +15,7 @@ const notFoundUrl = 'https://a.espncdn.com/combiner/i?img=/i/teamlogos/leagues/5
 
 const PlayerProps = ({ players, events, slip, setSlip, token, week }) => {
     //console.debug("PROP EVENTS:", events);
+    //console.debug("ALL PLAYERS:", players);
     const [filteredPlayers, setFilteredPlayers] = useState([]);
     const [show, setShow] = useState(false);
     const [selectedPlayer, setSelectedPlayer] = useState("");
